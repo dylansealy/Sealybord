@@ -284,7 +284,7 @@ def program():
                         addPosition()
                     # Bridge field
                     if positionPlayers[turnPlayer] == 6:
-                        positionPlayers[turnPlayer] == 12
+                        positionPlayers[turnPlayer] = 12
                         eventText = "Je kwam op het brug vakje!"
                     # Hostel field
                     elif positionPlayers[turnPlayer] == 19:
