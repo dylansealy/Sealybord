@@ -94,7 +94,7 @@ def userSetUp():
 
 # Global variables program
 def variables():
-    global boardFields, totalPlayers, namePlayers, positionPlayers, turnPlayer, xPlayers, yPlayers, valueDice
+    global boardFields, totalPlayers, namePlayers, positionPlayers, turnPlayer, previousTurnPlayer, xPlayers, yPlayers, valueDice
 
     # X,Y positions board
     boardFields = [[145, 715], [294, 715], [373, 715], [445, 715], [526, 715], [603, 715], [691, 715], [782, 715], [855, 710],
@@ -112,16 +112,15 @@ def variables():
 
     # Keeps track of the positions of the players
     positionPlayers = [0] * totalPlayers
-    # Variable for keeping track which players turn it its
-    turnPlayer = 0
-
+    # Variable for keeping track which players turn it its and which player next
+    turnPlayer = random.randint(0, len(totalPlayers))
+    previousTurnPlayer = -1
     # Variables for keeping track the x,y coordinates of all players
     xPlayers = [0] * totalPlayers
     yPlayers = [0] * totalPlayers
 
     valueDice = 0
     errors()
-    # wie het hoogste gooit mag beginnen
 
 
 # User setup errors
@@ -135,24 +134,31 @@ def errors():
         # Sets a message box with the properties title and text
         messagebox.showerror("Sealybord", "Het namen veld mag niet leeg zijn!")
         userSetUp()
+    #Naamlengte 13
     elif len(namePlayers) != totalPlayers:
         stageProgram = 0
         error = Tk()
         error.withdraw()
         messagebox.showerror("Sealybord", "Het aantal namen komt niet overeen met het aantal spelers!")
         userSetUp()
+    for i in namePlayers:
+        if len(i) > 14:
+            stageProgram = 0
+            error = Tk()
+            error.withdraw()
+            messagebox.showerror("Sealybord", "Een naam mag niet langer dan 14 tekens zijn!")
+            userSetUp()
+    if stageProgram == 1: program()
 
 
-# Starts user set up
-userSetUp()
-
-
-# Program setup
-if stageProgram > 0:
+def program():
+    global windowIcon, stageProgram, gameBoard, xPlayer, yPlayer, valueDice, positionPlayers, turnPlayer, previousTurnPlayer
+    # Program setup
     # Starts pygame and sets the height and width of the programs window and its position
     pygame.init()
     os.environ['SDL_VIDEO_WINDOW_POS'] = "0,32"
-    windowSize = [1400, 800]
+    if totalPlayers != 1: windowSize = [1450, 800]
+    else: windowSize = [1200, 800]
     # Not RESIZABLE, because of changing x,y coordinats
     window = pygame.display.set_mode(windowSize)
     # Sets the window properties icon, title and frame rate
@@ -176,14 +182,33 @@ if stageProgram > 0:
             window.blit(pawns[i], (xPlayers[i], yPlayers[i]))
 
         #Sets the font and prints a sentene in the game window
-        fontStyle = pygame.font.SysFont(None, 30)
-        diceText = "De laatste worp " + str(valueDice)
-        label = fontStyle.render(diceText, 1, (0, 0, 0))
-        window.blit(label, (390, 470))
+        fontStyle = pygame.font.SysFont(None, 35)
+        if positionPlayers[0] != 0:
+            diceText = "Laatste worp " + namePlayers[previousTurnPlayer] + ": " + str(valueDice)
+            label = fontStyle.render(diceText, 1, (0, 0, 0))
+            window.blit(label, (390, 473))
+        if totalPlayers != 1:
+            turnText = "Aan de beurt " + str(namePlayers[turnPlayer])
+            label = fontStyle.render(turnText, 1, (0, 0, 0))
+            window.blit(label, (390, 500))
+            eventText = "Gebeurtenissen" + str(namePlayers[turnPlayer])
+            label = fontStyle.render(eventText, 1, (0, 0, 0))
+            window.blit(label, (390, 527))
+        # Gets the names and positions of the players and prints them onto the screen
+        if totalPlayers != 1:
+            positionText = "Vak op het bord"
+            label = fontStyle.render(positionText, 1, (0, 0, 0))
+            window.blit(label, (1215, 20))
+            yText = 50
+            fontStyle = pygame.font.SysFont(None, 30)
+            for i in range(0, len(namePlayers)):
+                positionText = str(namePlayers[i]) + ": " + str(positionPlayers[i])
+                # Visualizes which players turn it is
+                if i == turnPlayer: label = fontStyle.render(positionText, 1, (166, 224, 58))
+                else: label = fontStyle.render(positionText, 1, (0, 0, 0))
 
-        turnText = "Aan de beurt " + str(turnPlayer + 1)
-        label = fontStyle.render(turnText, 1, (0, 0, 0))
-        window.blit(label, (390, 495))
+                window.blit(label, (1230, yText))
+                yText += 25
 
 
         # Updates graphics
@@ -204,7 +229,11 @@ if stageProgram > 0:
                 restart.withdraw()
                 result = messagebox.askquestion("Sealybord", "Wil je opnieuw beginnen?")
                 if result == "yes": userSetUp()
-                else: stageProgram = 3
+                else:
+                    quit = Tk()
+                    quit.withdraw()
+                    result = messagebox.askquestion("Sealybord", "Wil je stoppen?")
+                    if result == "yes": stageProgram = 3
             if stageProgram == 1:
                 if keyboard.is_pressed("SPACE"):
                     # Throws a dice
@@ -216,9 +245,16 @@ if stageProgram > 0:
                     # Stops program when someones position is 63
                     if positionPlayers[turnPlayer] == 63: stageProgram = 2
                     # Sets the next players turn
-                    else: turnPlayer += 1
+                    else:
+                        turnPlayer += 1
+                        previousTurnPlayer += 1
                     # Resets turnPlayers for the next round of turns
-                    if turnPlayer + 1 > totalPlayers: turnPlayer = 0
+                    if turnPlayer + 1 > totalPlayers:
+                        turnPlayer = 0
+                        previousTurnPlayer = -1
+                    # All game field related statements
+
+
                     # Stops program from interpreting multiple key stroke after each other
                     time.sleep(0.1)
                 # elif event.key == pygame.K_BACKSPACE: Placeholder
@@ -231,7 +267,8 @@ if stageProgram > 0:
                 result = messagebox.askquestion("Sealybord", "Wil je nog een keer spelen?")
                 if result == "yes": userSetUp()
                 else: stageProgram = 3
+        # Stops program
+        if stageProgram == 3: pygame.quit()
 
-
-# Stop program
-pygame.quit()
+# Starts program loop
+userSetUp()
