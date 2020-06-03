@@ -71,7 +71,7 @@ def userSetUp():
     totalPlayers.grid(row=1, column=0, padx=(295, 0), pady=(5, 0), sticky=W)
 
     playersName = StringVar()
-    namePlayers = Label(setUp, text="Vul de namen van de spelers in gescheiden doormiddel van \", \".", font=bodyFont)
+    namePlayers = Label(setUp, text="Vul de namen van de spelers in gescheiden doormiddel van \", \".\n Let op namen mogen maximaal 15 tekens lang zijn!", font=bodyFont)
     namePlayers.grid(row=2, column=0, padx=(40, 0), pady=(5, 0), sticky=W)
     # Sets an input field in the setUp window
     namePlayers = Entry(setUp, textvariable=playersName, width=50, bg="grey", fg="white")
@@ -94,7 +94,7 @@ def userSetUp():
 
 # Global variables program
 def variables():
-    global boardFields, totalPlayers, namePlayers, positionPlayers, turnPlayer, previousTurnPlayer, xPlayers, yPlayers, valueDice
+    global boardFields, totalPlayers, namePlayers, positionPlayers, turnPlayer, previousTurnPlayer, roundTurnPlayer, turns, skipTurn, waitTurn, xPlayers, yPlayers, dice, valueDice, eventText
 
     # X,Y positions board
     boardFields = [[145, 715], [294, 715], [373, 715], [445, 715], [526, 715], [603, 715], [691, 715], [782, 715], [855, 710],
@@ -112,14 +112,23 @@ def variables():
 
     # Keeps track of the positions of the players
     positionPlayers = [0] * totalPlayers
-    # Variable for keeping track which players turn it its and which player next
-    turnPlayer = random.randint(0, len(totalPlayers))
-    previousTurnPlayer = -1
+    # Variables for which players turn it is and the previous one
+    turnPlayer = random.randint(0, totalPlayers - 1)
+    previousTurnPlayer = turnPlayer -1
+    # Variables for keeping track how many rounds and turns passed
+    roundTurnPlayer = 0
+    turns = 0
+    # Variables for keeping track if a player must skip a round of wait until someone else
+    skipTurn = [0] * totalPlayers
+    waitTurn = [False] * totalPlayers
     # Variables for keeping track the x,y coordinates of all players
     xPlayers = [0] * totalPlayers
     yPlayers = [0] * totalPlayers
-
+    # Variables for keeping track de dices and its values
+    dice = []
     valueDice = 0
+    # Stops not defined error
+    eventText = ""
     errors()
 
 
@@ -152,7 +161,7 @@ def errors():
 
 
 def program():
-    global windowIcon, stageProgram, gameBoard, xPlayer, yPlayer, valueDice, positionPlayers, turnPlayer, previousTurnPlayer
+    global windowIcon, stageProgram, gameBoard, xPlayer, yPlayer, dice, valueDice, positionPlayers, turnPlayer, previousTurnPlayer, roundTurnPlayer, turns, waitTurn, eventText, skipTurn
     # Program setup
     # Starts pygame and sets the height and width of the programs window and its position
     pygame.init()
@@ -183,16 +192,15 @@ def program():
 
         #Sets the font and prints a sentene in the game window
         fontStyle = pygame.font.SysFont(None, 35)
-        if positionPlayers[0] != 0:
-            diceText = "Laatste worp " + namePlayers[previousTurnPlayer] + ": " + str(valueDice)
+        if turns != 0:
+            diceText = "Laatste worp " + namePlayers[previousTurnPlayer] + ": " + str(dice[0]) + " & " + str(dice[1]) + " maakt " + str(valueDice)
             label = fontStyle.render(diceText, 1, (0, 0, 0))
             window.blit(label, (390, 473))
+            label = fontStyle.render(eventText, 1, (0, 0, 0))
+            window.blit(label, (390, 500))
         if totalPlayers != 1:
             turnText = "Aan de beurt " + str(namePlayers[turnPlayer])
             label = fontStyle.render(turnText, 1, (0, 0, 0))
-            window.blit(label, (390, 500))
-            eventText = "Gebeurtenissen" + str(namePlayers[turnPlayer])
-            label = fontStyle.render(eventText, 1, (0, 0, 0))
             window.blit(label, (390, 527))
         # Gets the names and positions of the players and prints them onto the screen
         if totalPlayers != 1:
@@ -206,7 +214,6 @@ def program():
                 # Visualizes which players turn it is
                 if i == turnPlayer: label = fontStyle.render(positionText, 1, (166, 224, 58))
                 else: label = fontStyle.render(positionText, 1, (0, 0, 0))
-
                 window.blit(label, (1230, yText))
                 yText += 25
 
@@ -236,25 +243,68 @@ def program():
                     if result == "yes": stageProgram = 3
             if stageProgram == 1:
                 if keyboard.is_pressed("SPACE"):
-                    # Throws a dice
-                    valueDice = random.randint(1, 6)
-                    # Sends players back if their next position is greater than 63
-                    if positionPlayers[turnPlayer] + valueDice > 63: positionPlayers[turnPlayer] = 63 - (positionPlayers[turnPlayer] + valueDice - 63)
-                    # Updates the current players position in a normal situation
-                    else: positionPlayers[turnPlayer] += valueDice
+                    # Throws a dice and calculate the total value
+                    dice = [random.randint(1, 6), random.randint(1, 6)]
+                    valueDice = dice[0] + dice[1]
+                    def addPosition():
+                        global eventText
+                        # Sends players back if their next position is greater than 63
+                        if positionPlayers[turnPlayer] + valueDice > 63:
+                            positionPlayers[turnPlayer] = 63 - (positionPlayers[turnPlayer] + valueDice - 63)
+                            # Sends player back if their position is a goose
+                            if positionPlayers[turnPlayer] == 54 or positionPlayers[turnPlayer] == 59:
+                                positionPlayers[turnPlayer] - valueDice
+                                eventText = "Je kwam op een gans, terwijl je terug moest."
+                        # Updates the current players position in a normal situation
+                        else: positionPlayers[turnPlayer] += valueDice
+                    if skipTurn[turnPlayer] == 0 and waitTurn[turnPlayer] == False:
+                        addPosition()
+                        eventText = "Er is niets bijzonders."
+                    elif skipTurn[turnPlayer] > 0:
+                        skipTurn[turnPlayer] - 1
+                        eventText = "Je moest nog een beurt overslaan."
+                    # All game related rules
+                    # First turn dice exception
+                    if roundTurnPlayer == 0:
+                        if dice[0] == 4 and dice[1] == 5 or dice[0] == 5 and dice[1] == 4:
+                            positionPlayers[turnPlayer] = 53
+                            eventText = "Je gooide" + dice[0] + " & " + dice[1] + " dus je mag naar vakje 53."
+                        if dice[0] == 6 and dice[1] == 3 or dice[0] == 3 and dice[1] == 6:
+                            positionPlayers[turnPlayer] = 26
+                            eventText = "Je gooide" + dice[0] + " & " + dice[1] + " dus je mag naar vakje 26."
+                    # Goose fields
+                    if positionPlayers[turnPlayer] == 5 or positionPlayers[turnPlayer] == 9 or positionPlayers[turnPlayer] == 14 or \
+                    positionPlayers[turnPlayer] == 18 or positionPlayers[turnPlayer] == 23 or positionPlayers[turnPlayer] == 27 or \
+                    positionPlayers[turnPlayer] == 32 or positionPlayers[turnPlayer] == 36 or positionPlayers[turnPlayer] == 41 or \
+                    positionPlayers[turnPlayer] == 45 or positionPlayers[turnPlayer] == 50 or positionPlayers[turnPlayer] == 54 or \
+                    positionPlayers[turnPlayer] == 59:
+                        eventText = "Je kwam op een gans."
+                        addPosition()
+                    # Bridge field
+                    if positionPlayers[turnPlayer] == 6: positionPlayers[turnPlayer] == 12
+                    # Hostel field
+                    elif positionPlayers[turnPlayer] == 19: skipTurn[turnPlayer] += 1
+                    # Pit field
+                    elif positionPlayers[turnPlayer] == 31: waitTurn[turnPlayer] = True
+                    # Maze field
+                    elif positionPlayers[turnPlayer] == 42: positionPlayers[turnPlayer] = 37
+                    # Jail field
+                    elif positionPlayers[turnPlayer] == 52: waitTurn[turnPlayer] = True
+                    # Death field
+                    elif positionPlayers[turnPlayer] == 58: positionPlayers[turnPlayer] = 0
                     # Stops program when someones position is 63
                     if positionPlayers[turnPlayer] == 63: stageProgram = 2
                     # Sets the next players turn
                     else:
                         turnPlayer += 1
                         previousTurnPlayer += 1
+                        turns += 1
                     # Resets turnPlayers for the next round of turns
                     if turnPlayer + 1 > totalPlayers:
                         turnPlayer = 0
                         previousTurnPlayer = -1
-                    # All game field related statements
-
-
+                    if turns % 9 == 0:
+                        roundTurnPlayer += 1
                     # Stops program from interpreting multiple key stroke after each other
                     time.sleep(0.1)
                 # elif event.key == pygame.K_BACKSPACE: Placeholder
