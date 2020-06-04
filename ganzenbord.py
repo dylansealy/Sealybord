@@ -221,6 +221,54 @@ def program():
         pygame.display.flip()
 
         # Event listeners
+
+        # Defines function that checks game related rules
+        def gameRules():
+            global roundTurnPlayer, dice, positionPlayers, turnPlayer, eventText, skipTurn, waitTurn, stageProgram
+            # First turn dice exception
+            if roundTurnPlayer == 0:
+                if dice[0] == 4 and dice[1] == 5 or dice[0] == 5 and dice[1] == 4:
+                    positionPlayers[turnPlayer] = 53
+                    eventText = "Je gooide " + str(dice[0]) + " & " + str(dice[1]) + " dus je mag naar vakje 53."
+                if dice[0] == 6 and dice[1] == 3 or dice[0] == 3 and dice[1] == 6:
+                    positionPlayers[turnPlayer] = 26
+                    eventText = "Je gooide " + str(dice[0]) + " & " + str(dice[1]) + " dus je mag naar vakje 26."
+            # Goose fields
+            if positionPlayers[turnPlayer] == 5 or positionPlayers[turnPlayer] == 9 or positionPlayers[turnPlayer] == 14 or \
+                    positionPlayers[turnPlayer] == 18 or positionPlayers[turnPlayer] == 23 or \
+                    positionPlayers[turnPlayer] == 27 or positionPlayers[turnPlayer] == 32 or \
+                    positionPlayers[turnPlayer] == 36 or positionPlayers[turnPlayer] == 41 or \
+                    positionPlayers[turnPlayer] == 45 or positionPlayers[turnPlayer] == 50 or \
+                    positionPlayers[turnPlayer] == 54 or positionPlayers[turnPlayer] == 59:
+                messagebox.showwarning("Sealybord", "Je kwam terecht op een gans vakje!")
+                addPosition()
+            # Bridge field
+            if positionPlayers[turnPlayer] == 6:
+                positionPlayers[turnPlayer] = 12
+                eventText = "Je kwam op het brug vakje!"
+            # Hostel field
+            elif positionPlayers[turnPlayer] == 19:
+                skipTurn[turnPlayer] += 1
+                eventText = "Je kwam op het herberg vakje!"
+            # Pit field
+            elif positionPlayers[turnPlayer] == 31:
+                waitTurn[turnPlayer] = True
+                eventText = "Je kwam op het put vakje!"
+            # Maze field
+            elif positionPlayers[turnPlayer] == 42:
+                positionPlayers[turnPlayer] = 37
+                eventText = "Je kwam op het doolhof vakje!"
+            # Jail field
+            elif positionPlayers[turnPlayer] == 52:
+                waitTurn[turnPlayer] = True
+                eventText = "Je kwam op het gevangenis vakje!"
+            # Death field
+            elif positionPlayers[turnPlayer] == 58:
+                positionPlayers[turnPlayer] = 0
+                eventText = "Je kwam op het dood vakje!"
+            # Stops program when someones position is 63
+            elif positionPlayers[turnPlayer] == 63: stageProgram = 4
+
         for event in pygame.event.get():
             # Stops program when user clicks on exit
             if event.type == pygame.QUIT: stageProgram = 5
@@ -238,11 +286,13 @@ def program():
                 else:
                     result = messagebox.askquestion("Sealybord", "Wil je stoppen?")
                     if result == "yes": stageProgram = 5
+
             if stageProgram == 3:
                 if keyboard.is_pressed("SPACE"):
                     # Throws a dice and calculate the total value
                     dice = [random.randint(1, 6), random.randint(1, 6)]
                     valueDice = dice[0] + dice[1]
+
                     # Defines function for new position player
                     def addPosition():
                         global positionPlayers, turnPlayer, dice, valueDice, eventText
@@ -252,62 +302,22 @@ def program():
                             eventText = "Je kwam niet precies op vakje 63!"
                             # Sends player back if their position is a goose
                             if positionPlayers[turnPlayer] == 54 or positionPlayers[turnPlayer] == 59:
-                                positionPlayers[turnPlayer] - valueDice
-                                eventText = "Je kwam op een gans, terwijl je terug moest!"
+                                positionPlayers[turnPlayer] -= valueDice
+                                messagebox.showwarning("Sealybord", "Je kwam op een gans, terwijl je terug moest!")
                         # Update players position normally
                         else: positionPlayers[turnPlayer] += valueDice
-                    # Checking if player is allowed to move
+                        gameRules()
+
+                    # Checking if player is allowed to move. If so dice throw
                     if skipTurn[turnPlayer] == 0 and waitTurn[turnPlayer] == False:
                         eventText = "Er is niets bijzonders!"
                         addPosition()
                     # Decreases skipTurn when player skipped a turn
                     elif skipTurn[turnPlayer] > 0:
                         eventText = "Je moest nog een beurt overslaan!"
-                        skipTurn[turnPlayer] - 1
-                    elif waitTurn[turnPlayer] == True: eventText = "Je moet wachten totdat iemand langs je gekomen is!"
-                    # All game related rules
-                    # First turn dice exception
-                    if roundTurnPlayer == 0:
-                        if dice[0] == 4 and dice[1] == 5 or dice[0] == 5 and dice[1] == 4:
-                            positionPlayers[turnPlayer] = 53
-                            eventText = "Je gooide " + str(dice[0]) + " & " + str(dice[1]) + " dus je mag naar vakje 53."
-                        if dice[0] == 6 and dice[1] == 3 or dice[0] == 3 and dice[1] == 6:
-                            positionPlayers[turnPlayer] = 26
-                            eventText = "Je gooide " + str(dice[0]) + " & " + str(dice[1]) + " dus je mag naar vakje 26."
-                    # Goose fields
-                    if positionPlayers[turnPlayer] == 5 or positionPlayers[turnPlayer] == 9 or positionPlayers[turnPlayer] == 14 or \
-                            positionPlayers[turnPlayer] == 18 or positionPlayers[turnPlayer] == 23 or positionPlayers[turnPlayer] == 27 or \
-                            positionPlayers[turnPlayer] == 32 or positionPlayers[turnPlayer] == 36 or positionPlayers[turnPlayer] == 41 or \
-                            positionPlayers[turnPlayer] == 45 or positionPlayers[turnPlayer] == 50 or positionPlayers[turnPlayer] == 54 or \
-                            positionPlayers[turnPlayer] == 59:
-                        messagebox.showwarning("Sealybord", "Je kwam terecht op een gans vakje!")
-                        addPosition()
-                    # Bridge field
-                    if positionPlayers[turnPlayer] == 6:
-                        positionPlayers[turnPlayer] = 12
-                        eventText = "Je kwam op het brug vakje!"
-                    # Hostel field
-                    elif positionPlayers[turnPlayer] == 19:
-                        skipTurn[turnPlayer] += 1
-                        eventText = "Je kwam op het herberg vakje!"
-                    # Pit field
-                    elif positionPlayers[turnPlayer] == 31:
-                        waitTurn[turnPlayer] = True
-                        eventText = "Je kwam op het put vakje!"
-                    # Maze field
-                    elif positionPlayers[turnPlayer] == 42:
-                        positionPlayers[turnPlayer] = 37
-                        eventText = "Je kwam op het doolhof vakje!"
-                    # Jail field
-                    elif positionPlayers[turnPlayer] == 52:
-                        waitTurn[turnPlayer] = True
-                        eventText = "Je kwam op het gevangenis vakje!"
-                    # Death field
-                    elif positionPlayers[turnPlayer] == 58:
-                        positionPlayers[turnPlayer] = 0
-                        eventText = "Je kwam op het dood vakje!"
-                    # Stops program when someones position is 63
-                    if positionPlayers[turnPlayer] == 63: stageProgram = 4
+                        skipTurn[turnPlayer] -= 1
+                    elif waitTurn[turnPlayer] == True: eventText = "Je moet wachten op iemand!"
+
                     # Updates turn related variables
                     turnPlayer += 1
                     previousTurnPlayer += 1
@@ -320,8 +330,7 @@ def program():
                     if turns % totalPlayers == 0: roundTurnPlayer += 1
                     # Stops program from interpreting multiple key strokes after each other
                     time.sleep(0.1)
-                    print(skipTurn)
-                    print(waitTurn)
+
             # Defines winner program stage
             if stageProgram == 4:
                 time.sleep(0.3)
@@ -332,6 +341,7 @@ def program():
                     pygame.quit()
                     userSetUp()
                 else: stageProgram = 5
+
         # Stops program
         if stageProgram == 5: pygame.quit()
 
