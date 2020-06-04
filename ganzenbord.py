@@ -43,6 +43,8 @@ def userSetUp():
     # Defines setUp window and sets properties window title, window icon, window size and window resize
     # Toplevel window prohibits pygame image error
     setUp = tk.Toplevel()
+    # Sets window focus on setUp
+    setUp.focus_set()
     setUp.title("Sealybord")
     setUp.geometry("500x400+600+300")
     setUp.resizable(0, 0)
@@ -224,7 +226,7 @@ def program():
 
         # Defines function that checks game related rules
         def gameRules():
-            global roundTurnPlayer, dice, positionPlayers, turnPlayer, eventText, skipTurn, waitTurn, stageProgram
+            global window, roundTurnPlayer, dice, positionPlayers, turnPlayer, eventText, skipTurn, waitTurn, stageProgram
             # First turn dice exception
             if roundTurnPlayer == 0:
                 if dice[0] == 4 and dice[1] == 5 or dice[0] == 5 and dice[1] == 4:
@@ -242,6 +244,8 @@ def program():
                     positionPlayers[turnPlayer] == 54 or positionPlayers[turnPlayer] == 59:
                 messagebox.showwarning("Sealybord", "Je kwam terecht op een gans vakje!")
                 addPosition()
+                # Resets window focus on window
+                program()
             # Bridge field
             if positionPlayers[turnPlayer] == 6:
                 positionPlayers[turnPlayer] = 12
@@ -282,10 +286,12 @@ def program():
                 if result == "yes":
                     # First pygame quit too prevent errors
                     pygame.quit()
+
                     userSetUp()
                 else:
                     result = messagebox.askquestion("Sealybord", "Wil je stoppen?")
                     if result == "yes": stageProgram = 5
+                    else: program()
 
             if stageProgram == 3:
                 if keyboard.is_pressed("SPACE"):
@@ -303,7 +309,8 @@ def program():
                             # Sends player back if their position is a goose
                             if positionPlayers[turnPlayer] == 54 or positionPlayers[turnPlayer] == 59:
                                 positionPlayers[turnPlayer] -= valueDice
-                                messagebox.showwarning("Sealybord", "Je kwam op een gans, terwijl je terug moest!")
+                                messagebox.showwarning("Sealybord", "Je kwam terecht op een gans vakje, terwijl je terug moest!")
+                                program()
                         # Update players position normally
                         else: positionPlayers[turnPlayer] += valueDice
                         gameRules()
