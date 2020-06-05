@@ -124,7 +124,7 @@ def variables():
     turns = 0
     # Variables keeping track if player must skip round or wait until someone else
     skipTurn = [0] * totalPlayers
-    waitTurn = [False] * totalPlayers
+    waitTurn = [[False, 0]] * totalPlayers
     # Variables keeping track x, y coordinates players
     xPlayers = [0] * totalPlayers
     yPlayers = [0] * totalPlayers
@@ -160,7 +160,7 @@ def errors():
 # Defines main loop program
 def program():
     global windowIcon, stageProgram, gameBoard, xPlayer, yPlayer, dice, valueDice, positionPlayers, turnPlayer, \
-            previousTurnPlayer, roundTurnPlayer, turns, waitTurn, eventText, skipTurn
+            previousTurnPlayer, roundTurnPlayer, turns, waitTurn, eventText, skipTurn, totalPlayers
     # Program set up
     # Starts pygame
     pygame.init()
@@ -245,7 +245,6 @@ def program():
                 messagebox.showwarning("Sealybord", "Je kwam terecht op een gans vakje!")
                 addPosition()
                 # Resets window focus on window
-                program()
             # Bridge field
             if positionPlayers[turnPlayer] == 6:
                 positionPlayers[turnPlayer] = 12
@@ -256,7 +255,7 @@ def program():
                 eventText = "Je kwam op het herberg vakje!"
             # Pit field
             elif positionPlayers[turnPlayer] == 31:
-                waitTurn[turnPlayer] = True
+                waitTurn[turnPlayer] = [True, 31]
                 eventText = "Je kwam op het put vakje!"
             # Maze field
             elif positionPlayers[turnPlayer] == 42:
@@ -264,7 +263,7 @@ def program():
                 eventText = "Je kwam op het doolhof vakje!"
             # Jail field
             elif positionPlayers[turnPlayer] == 52:
-                waitTurn[turnPlayer] = True
+                waitTurn[turnPlayer] = [True, 52]
                 eventText = "Je kwam op het gevangenis vakje!"
             # Death field
             elif positionPlayers[turnPlayer] == 58:
@@ -301,7 +300,13 @@ def program():
 
                     # Defines function for new position player
                     def addPosition():
-                        global positionPlayers, turnPlayer, dice, valueDice, eventText
+                        global positionPlayers, turnPlayer, dice, valueDice, eventText, waitTurn
+                        # Enables players to move after waitTurn
+                        for i in waitTurn:
+                            if positionPlayers[turnPlayer] + valueDice > i[1]:
+                                i[0] = False
+                                i[1] = 0
+
                         # Sends players back after board field 63
                         if positionPlayers[turnPlayer] + valueDice > 63:
                             positionPlayers[turnPlayer] = 63 - (positionPlayers[turnPlayer] + valueDice - 63)
@@ -310,21 +315,35 @@ def program():
                             if positionPlayers[turnPlayer] == 54 or positionPlayers[turnPlayer] == 59:
                                 positionPlayers[turnPlayer] -= valueDice
                                 messagebox.showwarning("Sealybord", "Je kwam terecht op een gans vakje, terwijl je terug moest!")
-                                program()
                         # Update players position normally
                         else: positionPlayers[turnPlayer] += valueDice
                         gameRules()
 
                     # Checking if player is allowed to move. If so dice throw
-                    if skipTurn[turnPlayer] == 0 and waitTurn[turnPlayer] == False:
+                    if skipTurn[turnPlayer] == 0 and waitTurn[turnPlayer][0] == False:
                         eventText = "Er is niets bijzonders!"
                         addPosition()
                     # Decreases skipTurn when player skipped a turn
                     elif skipTurn[turnPlayer] > 0:
                         eventText = "Je moest nog een beurt overslaan!"
                         skipTurn[turnPlayer] -= 1
-                    elif waitTurn[turnPlayer] == True: eventText = "Je moet wachten op iemand!"
-
+                    elif waitTurn[turnPlayer][0] == True:
+                        # Prohibits singe player waitTurn loop
+                        if totalPlayers == 1:
+                            waitTurn[turnPlayer][0] = False
+                            waitTurn[turnPlayer][1] = 0
+                            eventText = "Geen spelers om te wachten. Sla beurt over!"
+                        for i in positionPlayers:
+                            if i < positionPlayers[turnPlayer]:
+                                waitTurn[turnPlayer][0] = False
+                                waitTurn[turnPlayer][1] = 0
+                                eventText = "Geen spelers om te wachten. Sla beurt over!"
+                        """
+                        for i in positionPlayers:
+                            if i < positionPlayers[turnPlayer]
+                                eventText = "Je moet wachten op iemand!"
+                    elif waitTurn[turnPlayer] == True: 
+                    """
                     # Updates turn related variables
                     turnPlayer += 1
                     previousTurnPlayer += 1
@@ -336,6 +355,7 @@ def program():
                     # Checks if round has passed
                     if turns % totalPlayers == 0: roundTurnPlayer += 1
                     # Stops program from interpreting multiple key strokes after each other
+                    print(turnPlayer)
                     time.sleep(0.1)
 
             # Defines winner program stage
