@@ -32,7 +32,7 @@ titleFrameImage.save("images/resized/sealy.jpg")
 
 
 # Defines function for user set up
-def userSetUp(tempNamePlayers):
+def userSetUp(storePlayersName):
     # Defines variables as global variables instead of scoped variables
     global stageProgram, playersTotal, playersName
     # Variable for tracking stage program
@@ -73,7 +73,7 @@ def userSetUp(tempNamePlayers):
     totalPlayers.grid(row=1, column=0, padx=(295, 0), pady=(5, 0), sticky=W)
 
     playersName = StringVar()
-    playersName = tempNamePlayers
+    playersName.set(storePlayersName)
     namePlayers = Label(setUp, text="Vul de namen van de spelers in gescheiden doormiddel van \", \".\n Let op namen mogen maximaal 15 tekens lang zijn!", font=bodyFont)
     namePlayers.grid(row=2, column=0, padx=(40, 0), pady=(5, 0), sticky=W)
     # Defines input field setUp window
@@ -112,10 +112,11 @@ def variables():
                    [440, 145], [365, 145], [290, 160], [205, 225], [175, 340], [190, 410], [235, 470], [305, 500], [370, 310]]
     # Gets playersTotal and playersName from userSetUp and converts namePlayers into list
     totalPlayers = playersTotal.get()
-    tempNamePlayers = playersName.get()
-    namePlayers = tempNamePlayers.split(", ")
+    storePlayersName = playersName.get()
+    namePlayers = storePlayersName.split(", ")
     # Variable keeping track position players
-    positionPlayers = [0] * totalPlayers
+    ##
+    positionPlayers = [30] * totalPlayers
     # Variables keeping track which players turn it is and the previous player. Also chooses who starts
     turnPlayer = random.randint(0, totalPlayers - 1)
     previousTurnPlayer = turnPlayer - 1
@@ -136,24 +137,24 @@ def variables():
     eventText = ""
 
     stageProgram = 2
-    errors(tempNamePlayers)
+    errors(storePlayersName)
 
 
 # Defines function that check for userSetUp errors
-def errors(tempNamePlayers):
+def errors(storePlayersName):
     global stageProgram, namePlayers
     if namePlayers[0] == "":
         # Defines message box error with properties title and text
         messagebox.showerror("Sealybord", "Het namen veld mag niet leeg zijn!")
-
-        userSetUp(tempNamePlayers)
+        # Keeps name input
+        userSetUp(storePlayersName)
     elif len(namePlayers) != totalPlayers:
         messagebox.showerror("Sealybord", "Het aantal namen komt niet overeen met het aantal spelers!")
-        userSetUp(tempNamePlayers)
+        userSetUp(storePlayersName)
     for i in namePlayers:
         if len(i) > 15:
             messagebox.showerror("Sealybord", "Een naam mag niet langer dan 14 tekens zijn!")
-            userSetUp(tempNamePlayers)
+            userSetUp(storePlayersName)
     if stageProgram == 2:
         stageProgram = 3
         program()
@@ -298,8 +299,11 @@ def program():
             if stageProgram == 3:
                 if keyboard.is_pressed("SPACE"):
                     # Throws a dice and calculate the total value
-                    dice = [random.randint(1, 6), random.randint(1, 6)]
+                    ##
+                    #dice = [random.randint(1, 6), random.randint(1, 6)]
+                    dice = [0, 1]
                     valueDice = dice[0] + dice[1]
+
 
                     # Defines function for new position player
                     def addPosition():
@@ -372,4 +376,4 @@ def program():
 
 
 # Starts program loop
-userSetUp('sdf')
+userSetUp("")
