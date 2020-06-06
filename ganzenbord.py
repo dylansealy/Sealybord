@@ -249,7 +249,7 @@ def program():
             global gooseFields, dice, positionPlayers, turnPlayer, eventText, skipTurn, waitTurn,\
                     stageProgram
             # First turn dice exception
-            if positionPlayers[turnPlayer] == 0:
+            if positionPlayers[turnPlayer] - 9 == 0:
                 if dice[0] == 4 and dice[1] == 5 or dice[0] == 5 and dice[1] == 4:
                     positionPlayers[turnPlayer] = 53
                     eventText = "Je gooide " + str(dice[0]) + " & " + str(dice[1]) + " dus je mag naar vakje 53."
@@ -258,7 +258,7 @@ def program():
                     eventText = "Je gooide " + str(dice[0]) + " & " + str(dice[1]) + " dus je mag naar vakje 26."
             # Goose field
             if positionPlayers[turnPlayer] in gooseFields:
-                messagebox.showwarning("Sealybord", "Je kwam terecht op een gans vakje!")
+                messagebox.showwarning("Sealybord", "Je kwam terecht op een cookie!")
                 addPosition()
             # Bridge field
             if positionPlayers[turnPlayer] == 6:
@@ -313,7 +313,8 @@ def program():
             if stageProgram == 3:
                 if keyboard.is_pressed("SPACE"):
                     # Throws a dice and calculates the total value
-                    dice = [random.randint(1, 6), random.randint(1, 6)]
+                    ##dice = [random.randint(1, 6), random.randint(1, 6)]
+                    dice = [5, 4]
                     valueDice = dice[0] + dice[1]
 
                     # <-- Defines function for new position player -->
@@ -343,7 +344,7 @@ def program():
                                 # Sends player back if their position is a goose
                                 if positionPlayers[turnPlayer] in gooseFields:
                                     positionPlayers[turnPlayer] -= valueDice
-                                    messagebox.showwarning("Sealybord", "Je kwam terecht op een gans vakje, terwijl je terug moest!")
+                                    messagebox.showwarning("Sealybord", "Je kwam terecht op een cookie, terwijl je terug moest!")
                             # Update players position normally
                             else: positionPlayers[turnPlayer] += valueDice
                             gameRules()
