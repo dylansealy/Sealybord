@@ -6,45 +6,61 @@ import tkinter.font as tkFont
 import keyboard
 import time
 import os
+import webbrowser
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
 
 
 # <-- Image and set up variables -->
-pawns = [Image.open("images/original/c++.png"), Image.open("images/original/css.png"), Image.open("images/original/dart.png"),
-         Image.open("images/original/html.png"), Image.open("images/original/js.png"), Image.open("images/original/php.png"),
-         Image.open("images/original/python.png"), Image.open("images/original/swift.png"),
-         Image.open("images/original/visualcode.png"), Image.open("images/original/typescript.png"),
-         Image.open("images/original/java.png"), Image.open("images/original/sql.png")]
+pawns = [Image.open("images/original/pawns/c++.png"), Image.open("images/original/pawns/css.png"),
+         Image.open("images/original/pawns/dart.png"), Image.open("images/original/pawns/html.png"),
+         Image.open("images/original/pawns/js.png"), Image.open("images/original/pawns/php.png"),
+         Image.open("images/original/pawns/python.png"), Image.open("images/original/pawns/swift.png"),
+         Image.open("images/original/pawns/visualcode.png"), Image.open("images/original/pawns/typescript.png"),
+         Image.open("images/original/pawns/java.png"), Image.open("images/original/pawns/sql.png")]
 pawnsName = ["c++.png", "css.png", "dart.png", "html.png", "js.png", "php.png", "python.png", "swift.png",
              "visualcode.png", "typescript.png", "java.png", "sql.png"]
 # Resizes pawn images with maximum height or width, but keeping aspect ratio
 for i in range(0, len(pawns)):
     pawns[i].thumbnail((50, 50))
-    pawns[i].save("images/resized/" + pawnsName[i])
+    pawns[i].save("images/resized/pawns/" + pawnsName[i])
 
-pawns = [pygame.image.load("images/resized/c++.png"), pygame.image.load("images/resized/css.png"),
-         pygame.image.load("images/resized/dart.png"), pygame.image.load("images/resized/html.png"),
-         pygame.image.load("images/resized/js.png"), pygame.image.load("images/resized/php.png"),
-         pygame.image.load("images/resized/python.png"), pygame.image.load("images/resized/swift.png"),
-         pygame.image.load("images/resized/visualcode.png"), pygame.image.load("images/resized/typescript.png"),
-         pygame.image.load("images/resized/java.png"), pygame.image.load("images/resized/sql.png")]
+pawns = [pygame.image.load("images/resized/pawns/c++.png"), pygame.image.load("images/resized/pawns/css.png"),
+         pygame.image.load("images/resized/pawns/dart.png"), pygame.image.load("images/resized/pawns/html.png"),
+         pygame.image.load("images/resized/pawns/js.png"), pygame.image.load("images/resized/pawns/php.png"),
+         pygame.image.load("images/resized/pawns/python.png"), pygame.image.load("images/resized/pawns/swift.png"),
+         pygame.image.load("images/resized/pawns/visualcode.png"), pygame.image.load("images/resized/pawns/typescript.png"),
+         pygame.image.load("images/resized/pawns/java.png"), pygame.image.load("images/resized/pawns/sql.png")]
 gameBoard = pygame.image.load("images/original/spelbord.png")
 windowIcon = pygame.image.load("images/original/littleSealy.png")
 titleFrameImage = Image.open("images/original/sealy.jpg")
 titleFrameImage.thumbnail((60, 60))
 titleFrameImage.save("images/resized/sealy.jpg")
-cookieImage = Image.open("images/original/cookie.png")
-cookieImage.thumbnail((70, 70))
-cookieImage.save("images/resized/cookie.png")
-cookieImage = pygame.image.load("images/resized/cookie.png")
-
+gameBoardAssets = [Image.open("images/original/gameBoardAssets/cookie.png"),
+                   Image.open("images/original/gameBoardAssets/wifi.png"),
+                   Image.open("images/original/gameBoardAssets/github.png"),
+                   Image.open("images/original/gameBoardAssets/darweb.png"),
+                   Image.open("images/original/gameBoardAssets/internet.png"),
+                   Image.open("images/original/gameBoardAssets/apple.png"),
+                   Image.open("images/original/gameBoardAssets/internetexplorer.png")]
+gameBoardAssetsName = ["cookie.png", "wifi.png", "github.png", "darkweb.png", "internet.png", "apple.png",
+                       "internetexplorer.png"]
+for i in range(0, len(gameBoardAssets)):
+    gameBoardAssets[i].thumbnail((70, 70))
+    gameBoardAssets[i].save("images/resized/gameBoardAssets/" + gameBoardAssetsName[i])
+cookieImage = pygame.image.load("images/resized/gameBoardAssets/cookie.png")
+wifiImage = pygame.image.load("images/resized/gameBoardAssets/wifi.png")
+gitHubImage = pygame.image.load("images/resized/gameBoardAssets/github.png")
+darkWebImage = pygame.image.load("images/resized/gameBoardAssets/darkweb.png")
+internetImage = pygame.image.load("images/resized/gameBoardAssets/internet.png")
+appleImage = pygame.image.load("images/resized/gameBoardAssets/apple.png")
+internetExplorerImage = pygame.image.load("images/resized/gameBoardAssets/internetexplorer.png")
 
 # <-- Defines function for user set up -->
-def userSetUp(storePlayersName, storePlayersTotal):
+def userSetUp(storePlayersName, storePlayersTotal, storeRulesCheck):
     # Defines variables as global variables instead of scoped variables
-    global stageProgram, playersTotal, playersName
+    global stageProgram, playersTotal, playersName, rulesCheck
     # Variable for tracking stage program
     stageProgram = 0
     # Defines root window. Withdrawing root window so tkinter doesn't create one.
@@ -104,9 +120,13 @@ def userSetUp(storePlayersName, storePlayersTotal):
         stageProgram = 1
         variables()
 
+    rulesCheck = IntVar()
+    rulesCheck.set(storeRulesCheck)
+    rulesCheckBox = Checkbutton(setUp, text="Ik wil de spelregels bekijken.", variable=rulesCheck)
+    rulesCheckBox.grid(row=4, column=0, padx=(40, 0), pady=(5, 0), sticky=W)
     # Defines button in setUp window
     nextButton = Button(setUp, text="Volgende", command=button)
-    nextButton.grid(row=4, column=0, padx=(0, 60), pady=(42, 0), sticky=E)
+    nextButton.grid(row=5, column=0, padx=(0, 60), pady=(10, 0), sticky=E)
     # Starts loop setUp window
     setUp.mainloop()
 
@@ -117,13 +137,13 @@ def variables():
             previousTurnPlayer, turns, skipTurn, waitTurn, waitTurnPossible, xPlayers, yPlayers,\
             dice, valueDice, eventText, stageProgram
     # Defines x, y board fields
-    boardFields = [[145, 715], [294, 715], [373, 715], [445, 715], [526, 715], [593, 705], [691, 715], [782, 715], [855, 710],
+    boardFields = [[145, 715], [294, 715], [373, 715], [445, 715], [526, 715], [593, 705], [682, 705], [782, 715], [855, 710],
                    [930, 665], [1019, 625], [1065, 565], [1100, 505], [1120, 435], [1100, 342], [1105, 275], [1080, 210], [1035, 150],
-                   [940, 75], [845, 45], [755, 40], [675, 40], [600, 40], [505, 30], [442, 40], [360, 40], [290, 40], [200, 65],
-                   [148, 115], [100, 165], [70, 225], [55, 295], [43, 356], [75, 445], [115, 500], [165, 555], [210, 575],
-                   [300, 615], [375, 615], [450, 615], [527, 615], [593, 595], [695, 615], [780, 615], [860, 600], [920, 530],
-                   [995, 480], [1010, 410], [1015, 335], [990, 270], [900, 190], [845, 150], [730, 145], [620, 145], [508, 143],
-                   [440, 145], [365, 145], [290, 160], [205, 225], [172, 316], [190, 410], [235, 470], [305, 500], [370, 310]]
+                   [940, 75], [830, 35], [755, 40], [675, 40], [600, 40], [505, 30], [442, 40], [360, 40], [290, 40], [200, 65],
+                   [148, 115], [100, 165], [70, 225], [43, 279], [43, 356], [75, 445], [115, 500], [165, 555], [210, 575],
+                   [300, 615], [375, 615], [450, 615], [527, 615], [593, 595], [681, 595], [780, 615], [860, 600], [920, 530],
+                   [995, 480], [1010, 410], [1015, 335], [990, 270], [900, 190], [845, 150], [715, 142], [620, 145], [508, 143],
+                   [440, 145], [365, 145], [290, 160], [200, 225], [172, 316], [190, 410], [235, 470], [305, 500], [370, 310]]
     # Goose fields
     gooseFields = [5, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59]
     # Gets playersTotal and playersName from userSetUp and converts namePlayers into list
@@ -152,27 +172,32 @@ def variables():
     # Defines message game
     eventText = ""
 
+    storeRulesCheck = rulesCheck.get()
     stageProgram = 2
-    errors(storePlayersName, storePlayersTotal)
+    errors(storePlayersName, storePlayersTotal, storeRulesCheck)
 
 
 # <-- Defines function that checks for userSetUp errors -->
-def errors(storePlayersName, storePlayersTotal):
+def errors(storePlayersName, storePlayersTotal, storeRulesCheck):
     global stageProgram, namePlayers
     if namePlayers[0] == "":
         # Defines message box error with properties title and text
         messagebox.showerror("Sealybord", "Het namen veld mag niet leeg zijn!")
         # Keeps name input
-        userSetUp(storePlayersName, storePlayersTotal)
+        userSetUp(storePlayersName, storePlayersTotal, storeRulesCheck)
     elif len(namePlayers) != totalPlayers:
         messagebox.showerror("Sealybord", "Het aantal namen komt niet overeen met het aantal spelers!")
-        userSetUp(storePlayersName, storePlayersTotal)
+        userSetUp(storePlayersName, storePlayersTotal, storeRulesCheck)
     for i in namePlayers:
         if len(i) > 15:
             messagebox.showerror("Sealybord", "Een naam mag niet langer dan 15 tekens zijn!")
-            userSetUp(storePlayersName, storePlayersTotal)
+            userSetUp(storePlayersName, storePlayersTotal, storeRulesCheck)
     if stageProgram == 2:
         stageProgram = 3
+        # Opens rules page if checked
+        rulesView = rulesCheck.get()
+        if rulesView == 1: webbrowser.open(url="https://github.com/DylanSealy/Ganzenbord.git")
+
         program()
 
 
@@ -204,7 +229,16 @@ def program():
         # Gets dimension of gameBoard prints image into window
         gameBoardDimensions = gameBoard.get_rect()
         window.blit(gameBoard, gameBoardDimensions)
-        # Gets x, y positions of players and draws their pawn
+        # Draws cookies on gooseFields
+        for i in gooseFields: window.blit(cookieImage, (boardFields[i]))
+        # Draws wifi
+        window.blit(wifiImage, boardFields[6])
+        window.blit(gitHubImage, boardFields[19])
+        window.blit(darkWebImage, boardFields[31])
+        window.blit(internetImage, boardFields[42])
+        window.blit(appleImage, boardFields[52])
+        window.blit(internetExplorerImage, boardFields[58])
+        # Gets x, y positionss of players and draws their pawn
         for i in range(0, len(positionPlayers)):
             xPlayers[i] = boardFields[positionPlayers[i]][0]
             yPlayers[i] = boardFields[positionPlayers[i]][1]
@@ -237,8 +271,6 @@ def program():
                 else: label = fontStyle.render(positionText, 1, (0, 0, 0))
                 window.blit(label, (1230, yText))
                 yText += 25
-        # Draws cookies on gooseFields
-        for i in gooseFields: window.blit(cookieImage, (boardFields[i]))
 
         # <-- Updates window graphics -->
         frameRate.tick(60)
@@ -258,32 +290,42 @@ def program():
                     eventText = "Je gooide " + str(dice[0]) + " & " + str(dice[1]) + " dus je mag naar vakje 26."
             # Goose field
             if positionPlayers[turnPlayer] in gooseFields:
+                # Loads and plays sound
+                pygame.mixer.music.load("sounds/cookie.mp3")
+                pygame.mixer.music.play(0)
+
                 messagebox.showwarning("Sealybord", "Je kwam terecht op een cookie!")
                 addPosition()
             # Bridge field
             if positionPlayers[turnPlayer] == 6:
                 positionPlayers[turnPlayer] = 12
-                eventText = "Je kwam op het brug vakje!"
+                pygame.mixer.music.load("sounds/wifi.mp3")
+                pygame.mixer.music.play(0)
+                eventText = "Je kwam op wifi!"
             # Hostel field
             elif positionPlayers[turnPlayer] == 19:
                 skipTurn[turnPlayer] += 1
-                eventText = "Je kwam op het herberg vakje!"
+                eventText = "Je kwam op GitHub!"
             # Pit field
             elif positionPlayers[turnPlayer] == 31:
                 waitTurn[turnPlayer] = [True, 31]
-                eventText = "Je kwam op het put vakje!"
+                eventText = "Je kwam op het dark web!"
             # Maze field
             elif positionPlayers[turnPlayer] == 42:
                 positionPlayers[turnPlayer] = 39
-                eventText = "Je kwam op het doolhof vakje!"
+                eventText = "Je kwam op het internet!"
             # Jail field
             elif positionPlayers[turnPlayer] == 52:
                 waitTurn[turnPlayer] = [True, 52]
-                eventText = "Je kwam op het gevangenis vakje!"
+                pygame.mixer.music.load("sounds/apple.mp3")
+                pygame.mixer.music.play(0)
+                eventText = "Je kwam op Apple!"
             # Death field
             elif positionPlayers[turnPlayer] == 58:
                 positionPlayers[turnPlayer] = 0
-                eventText = "Je kwam op het dood vakje!"
+                pygame.mixer.music.load("sounds/internetexplorer.mp3")
+                pygame.mixer.music.play(0)
+                eventText = "Je kwam op Internet Explorer!"
             # Stops program when someones position is 63
             elif positionPlayers[turnPlayer] == 63: stageProgram = 4
 
@@ -302,7 +344,7 @@ def program():
                     # First pygame quit too prevent old window errors
                     pygame.quit()
 
-                    userSetUp("")
+                    userSetUp("Naam", 1, 0)
                 else:
                     result = messagebox.askquestion("Sealybord", "Wil je stoppen?")
                     if result == "yes": stageProgram = 5
@@ -313,8 +355,7 @@ def program():
             if stageProgram == 3:
                 if keyboard.is_pressed("SPACE"):
                     # Throws a dice and calculates the total value
-                    ##dice = [random.randint(1, 6), random.randint(1, 6)]
-                    dice = [5, 4]
+                    dice = [random.randint(1, 6), random.randint(1, 6)]
                     valueDice = dice[0] + dice[1]
 
                     # <-- Defines function for new position player -->
@@ -344,6 +385,8 @@ def program():
                                 # Sends player back if their position is a goose
                                 if positionPlayers[turnPlayer] in gooseFields:
                                     positionPlayers[turnPlayer] -= valueDice
+                                    pygame.mixer.music.load("sounds/cookie.mp3")
+                                    pygame.mixer.music.play(0)
                                     messagebox.showwarning("Sealybord", "Je kwam terecht op een cookie, terwijl je terug moest!")
                             # Update players position normally
                             else: positionPlayers[turnPlayer] += valueDice
@@ -385,7 +428,7 @@ def program():
                 result = messagebox.askquestion("Sealybord", "Wil je nog een keer spelen?")
                 if result == "yes":
                     pygame.quit()
-                    userSetUp("")
+                    userSetUp("Naam", 1, 0)
                 else: stageProgram = 5
 
         # Stops program
@@ -393,4 +436,4 @@ def program():
 
 
 # <-- Starts program loop -->
-userSetUp("Naam", 1)
+userSetUp("Naam", 1, 0)
