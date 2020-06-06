@@ -42,7 +42,7 @@ cookieImage = pygame.image.load("images/resized/cookie.png")
 
 
 # <-- Defines function for user set up -->
-def userSetUp(storePlayersName):
+def userSetUp(storePlayersName, storePlayersTotal):
     # Defines variables as global variables instead of scoped variables
     global stageProgram, playersTotal, playersName
     # Variable for tracking stage program
@@ -76,7 +76,7 @@ def userSetUp(storePlayersName):
     title.grid(row=0, column=0, padx=(120,65), sticky=E)
     # Defines tkinter variable and sets its default value
     playersTotal = IntVar()
-    playersTotal.set("1")
+    playersTotal.set(storePlayersTotal)
 
     bodyFont = tkFont.Font(size=11)
     totalPlayers = Label(setUp, text="Hoeveel spelers willen er spelen?", font=bodyFont)
@@ -127,6 +127,7 @@ def variables():
     # Goose fields
     gooseFields = [5, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59]
     # Gets playersTotal and playersName from userSetUp and converts namePlayers into list
+    storePlayersTotal = playersTotal.get()
     totalPlayers = playersTotal.get()
     storePlayersName = playersName.get()
     namePlayers = storePlayersName.split(", ")
@@ -152,24 +153,24 @@ def variables():
     eventText = ""
 
     stageProgram = 2
-    errors(storePlayersName)
+    errors(storePlayersName, storePlayersTotal)
 
 
 # <-- Defines function that checks for userSetUp errors -->
-def errors(storePlayersName):
+def errors(storePlayersName, storePlayersTotal):
     global stageProgram, namePlayers
     if namePlayers[0] == "":
         # Defines message box error with properties title and text
         messagebox.showerror("Sealybord", "Het namen veld mag niet leeg zijn!")
         # Keeps name input
-        userSetUp(storePlayersName)
+        userSetUp(storePlayersName, storePlayersTotal)
     elif len(namePlayers) != totalPlayers:
         messagebox.showerror("Sealybord", "Het aantal namen komt niet overeen met het aantal spelers!")
-        userSetUp(storePlayersName)
+        userSetUp(storePlayersName, storePlayersTotal)
     for i in namePlayers:
         if len(i) > 15:
             messagebox.showerror("Sealybord", "Een naam mag niet langer dan 15 tekens zijn!")
-            userSetUp(storePlayersName)
+            userSetUp(storePlayersName, storePlayersTotal)
     if stageProgram == 2:
         stageProgram = 3
         program()
@@ -232,7 +233,7 @@ def program():
             for i in range(0, len(namePlayers)):
                 positionText = str(namePlayers[i]) + ": " + str(positionPlayers[i])
                 # Visualizes which players turn it is
-                if i == turnPlayer: label = fontStyle.render(positionText, 1, (166, 224, 58))
+                if i == turnPlayer: label = fontStyle.render(positionText, 1, (91, 123, 212))
                 else: label = fontStyle.render(positionText, 1, (0, 0, 0))
                 window.blit(label, (1230, yText))
                 yText += 25
@@ -391,4 +392,4 @@ def program():
 
 
 # <-- Starts program loop -->
-userSetUp("")
+userSetUp("Naam", 1)
