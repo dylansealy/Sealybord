@@ -13,17 +13,23 @@ from PIL import Image, ImageTk
 
 # <-- Image and set up variables -->
 pawns = [Image.open("images/original/c++.png"), Image.open("images/original/css.png"), Image.open("images/original/dart.png"),
-         Image.open("images/original/html.png"), Image.open("images/original/java.png"), Image.open("images/original/js.png"),
-         Image.open("images/original/php.png"), Image.open("images/original/python.png"), Image.open("images/original/sql.png")]
-pawnsName = ["c++.png", "css.png", "dart.png", "html.png", "java.png", "js.png", "php.png", "python.png", "sql.png"]
+         Image.open("images/original/html.png"), Image.open("images/original/js.png"), Image.open("images/original/php.png"),
+         Image.open("images/original/python.png"), Image.open("images/original/swift.png"),
+         Image.open("images/original/typescript.png"), Image.open("images/original/visualcode.png"),
+         Image.open("images/original/java.png"), Image.open("images/original/sql.png")]
+pawnsName = ["c++.png", "css.png", "dart.png", "html.png", "js.png", "php.png", "python.png", "swift.png",
+             "typescript.png", "visualcode.png", "java.png", "sql.png"]
 # Resizes pawn images with maximum height or width, but keeping aspect ratio
 for i in range(0, len(pawns)):
     pawns[i].thumbnail((50, 50))
     pawns[i].save("images/resized/" + pawnsName[i])
 
-pawns = [pygame.image.load("images/resized/c++.png"), pygame.image.load("images/resized/css.png"), pygame.image.load("images/resized/dart.png"),
-         pygame.image.load("images/resized/sql.png"), pygame.image.load("images/resized/html.png"), pygame.image.load("images/resized/java.png"),
-         pygame.image.load("images/resized/js.png"), pygame.image.load("images/resized/php.png"), pygame.image.load("images/resized/python.png")]
+pawns = [pygame.image.load("images/resized/c++.png"), pygame.image.load("images/resized/css.png"),
+         pygame.image.load("images/resized/dart.png"), pygame.image.load("images/resized/html.png"),
+         pygame.image.load("images/resized/js.png"), pygame.image.load("images/resized/php.png"),
+         pygame.image.load("images/resized/python.png"), pygame.image.load("images/resized/swift.png"),
+         pygame.image.load("images/resized/typescript.png"), pygame.image.load("images/resized/visualcode.png"),
+         pygame.image.load("images/resized/java.png"), pygame.image.load("images/resized/sql.png")]
 gameBoard = pygame.image.load("images/original/spelbord.png")
 windowIcon = pygame.image.load("images/original/littleSealy.png")
 titleFrameImage = Image.open("images/original/sealy.jpg")
@@ -72,7 +78,7 @@ def userSetUp(storePlayersName):
     totalPlayers = Label(setUp, text="Hoeveel spelers willen er spelen?", font=bodyFont)
     totalPlayers.grid(row=1, column=0, padx=(40, 0), pady=(5, 0), sticky=W)
     # Defines drop down menu in setUp window
-    totalPlayers = OptionMenu(setUp, playersTotal, "1", "2", "3", "4", "5", "6", "7", "8", "9")
+    totalPlayers = OptionMenu(setUp, playersTotal, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
     totalPlayers.grid(row=1, column=0, padx=(295, 0), pady=(5, 0), sticky=W)
 
     playersName = StringVar()
