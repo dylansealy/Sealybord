@@ -1,10 +1,9 @@
 # Sealybord
 
-Sealybord is een Python spel gebasseerd op ganzenbord.
+Sealybord is een Python spel gebaseerd op ganzenbord.
 
-## Installation
-
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+## Spel starten
+### Clone de repository
 
 ```bash
 pip install foobar
