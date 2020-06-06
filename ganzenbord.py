@@ -114,7 +114,7 @@ def userSetUp(storePlayersName):
 # <-- Defines function that sets global variables program -->
 def variables():
     global boardFields, gooseFields, totalPlayers, namePlayers, positionPlayers, movePlayerPossible, turnPlayer,\
-            previousTurnPlayer, roundTurnPlayer, turns, skipTurn, waitTurn, waitTurnPossible, xPlayers, yPlayers,\
+            previousTurnPlayer, turns, skipTurn, waitTurn, waitTurnPossible, xPlayers, yPlayers,\
             dice, valueDice, eventText, stageProgram
     # Defines x, y board fields
     boardFields = [[145, 715], [294, 715], [373, 715], [445, 715], [526, 715], [593, 705], [691, 715], [782, 715], [855, 710],
@@ -136,8 +136,7 @@ def variables():
     # Variables keeping track which players turn it is and the previous player. Also chooses who starts
     turnPlayer = random.randint(0, totalPlayers - 1)
     previousTurnPlayer = turnPlayer - 1
-    # Variables keeping track how many rounds and turns passed
-    roundTurnPlayer = 0
+    # Variables keeping track how many turns passed
     turns = 0
     # Variables keeping track if player must skip round or wait until someone else
     skipTurn = [0] * totalPlayers
@@ -179,7 +178,7 @@ def errors(storePlayersName):
 # <-- Defines main loop program -->
 def program():
     global windowIcon, cookieImage, stageProgram, boardFields, gooseFields, gameBoard, xPlayer, yPlayer, dice, valueDice, positionPlayers,\
-            turnPlayer, previousTurnPlayer, roundTurnPlayer, turns, waitTurn, waitTurnPossible,  eventText, skipTurn, \
+            turnPlayer, previousTurnPlayer, turns, waitTurn, waitTurnPossible,  eventText, skipTurn, \
             totalPlayers
     # <-- Program set up -->
     # Starts pygame
@@ -246,10 +245,10 @@ def program():
 
         # <-- Defines function that checks game related rules -->
         def gameRules():
-            global gooseFields, roundTurnPlayer, dice, positionPlayers, turnPlayer, eventText, skipTurn, waitTurn,\
+            global gooseFields, dice, positionPlayers, turnPlayer, eventText, skipTurn, waitTurn,\
                     stageProgram
             # First turn dice exception
-            if roundTurnPlayer == 0:
+            if positionPlayers[turnPlayer] == 0:
                 if dice[0] == 4 and dice[1] == 5 or dice[0] == 5 and dice[1] == 4:
                     positionPlayers[turnPlayer] = 53
                     eventText = "Je gooide " + str(dice[0]) + " & " + str(dice[1]) + " dus je mag naar vakje 53."
@@ -373,8 +372,6 @@ def program():
                     if turnPlayer + 1 > totalPlayers:
                         turnPlayer = 0
                         previousTurnPlayer = -1
-                    # Checks if round has passed
-                    if turns % totalPlayers == 0: roundTurnPlayer += 1
                     # Stops program from interpreting multiple key strokes after each other
                     time.sleep(0.1)
 
