@@ -345,14 +345,6 @@ def program():
                         skipTurn[turnPlayer] -= 1
                     # Checks if waitTurn is possible
                     elif waitTurn[turnPlayer][0]:
-                        # Prohibits single player waitTurn loop
-                        """
-                        if totalPlayers == 1:
-                            waitTurn[turnPlayer][0] = False
-                            waitTurn[turnPlayer][1] = 0
-                            eventText = "Beurt overgeslagen, want geen spelers!"
-                        # Prohibits no players waitTurn loop
-                        """
                         waitTurnPossible = False
                         for i in positionPlayers:
                             if i < positionPlayers[turnPlayer]: waitTurnPossible = True
