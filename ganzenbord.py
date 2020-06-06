@@ -15,10 +15,10 @@ from PIL import Image, ImageTk
 pawns = [Image.open("images/original/c++.png"), Image.open("images/original/css.png"), Image.open("images/original/dart.png"),
          Image.open("images/original/html.png"), Image.open("images/original/js.png"), Image.open("images/original/php.png"),
          Image.open("images/original/python.png"), Image.open("images/original/swift.png"),
-         Image.open("images/original/typescript.png"), Image.open("images/original/visualcode.png"),
+         Image.open("images/original/visualcode.png"), Image.open("images/original/typescript.png"),
          Image.open("images/original/java.png"), Image.open("images/original/sql.png")]
 pawnsName = ["c++.png", "css.png", "dart.png", "html.png", "js.png", "php.png", "python.png", "swift.png",
-             "typescript.png", "visualcode.png", "java.png", "sql.png"]
+             "visualcode.png", "typescript.png", "java.png", "sql.png"]
 # Resizes pawn images with maximum height or width, but keeping aspect ratio
 for i in range(0, len(pawns)):
     pawns[i].thumbnail((50, 50))
@@ -28,13 +28,17 @@ pawns = [pygame.image.load("images/resized/c++.png"), pygame.image.load("images/
          pygame.image.load("images/resized/dart.png"), pygame.image.load("images/resized/html.png"),
          pygame.image.load("images/resized/js.png"), pygame.image.load("images/resized/php.png"),
          pygame.image.load("images/resized/python.png"), pygame.image.load("images/resized/swift.png"),
-         pygame.image.load("images/resized/typescript.png"), pygame.image.load("images/resized/visualcode.png"),
+         pygame.image.load("images/resized/visualcode.png"), pygame.image.load("images/resized/typescript.png"),
          pygame.image.load("images/resized/java.png"), pygame.image.load("images/resized/sql.png")]
 gameBoard = pygame.image.load("images/original/spelbord.png")
 windowIcon = pygame.image.load("images/original/littleSealy.png")
 titleFrameImage = Image.open("images/original/sealy.jpg")
 titleFrameImage.thumbnail((60, 60))
 titleFrameImage.save("images/resized/sealy.jpg")
+cookieImage = Image.open("images/original/cookie.png")
+cookieImage.thumbnail((70, 70))
+cookieImage.save("images/resized/cookie.png")
+cookieImage = pygame.image.load("images/resized/cookie.png")
 
 
 # <-- Defines function for user set up -->
@@ -113,13 +117,13 @@ def variables():
             previousTurnPlayer, roundTurnPlayer, turns, skipTurn, waitTurn, waitTurnPossible, xPlayers, yPlayers,\
             dice, valueDice, eventText, stageProgram
     # Defines x, y board fields
-    boardFields = [[145, 715], [294, 715], [373, 715], [445, 715], [526, 715], [603, 715], [691, 715], [782, 715], [855, 710],
-                   [950, 680], [1019, 625], [1065, 565], [1100, 505], [1120, 435], [1120, 355], [1105, 275], [1080, 210], [1035, 150],
-                   [955, 85], [845, 45], [755, 40], [675, 40], [600, 40], [520, 40], [442, 40], [360, 40], [290, 40], [210, 70],
-                   [148, 115], [100, 165], [70, 225], [55, 295], [55, 375], [75, 445], [115, 500], [165, 555], [225, 595],
-                   [300, 615], [375, 615], [450, 615], [527, 615], [607, 615], [695, 615], [780, 615], [860, 600], [940, 550],
-                   [995, 480], [1010, 410], [1015, 335], [990, 270], [925, 195], [845, 150], [730, 145], [620, 145], [527, 145],
-                   [440, 145], [365, 145], [290, 160], [205, 225], [175, 340], [190, 410], [235, 470], [305, 500], [370, 310]]
+    boardFields = [[145, 715], [294, 715], [373, 715], [445, 715], [526, 715], [593, 705], [691, 715], [782, 715], [855, 710],
+                   [930, 665], [1019, 625], [1065, 565], [1100, 505], [1120, 435], [1100, 342], [1105, 275], [1080, 210], [1035, 150],
+                   [940, 75], [845, 45], [755, 40], [675, 40], [600, 40], [505, 30], [442, 40], [360, 40], [290, 40], [200, 65],
+                   [148, 115], [100, 165], [70, 225], [55, 295], [43, 356], [75, 445], [115, 500], [165, 555], [210, 575],
+                   [300, 615], [375, 615], [450, 615], [527, 615], [593, 595], [695, 615], [780, 615], [860, 600], [920, 530],
+                   [995, 480], [1010, 410], [1015, 335], [990, 270], [900, 190], [845, 150], [730, 145], [620, 145], [508, 143],
+                   [440, 145], [365, 145], [290, 160], [205, 225], [172, 316], [190, 410], [235, 470], [305, 500], [370, 310]]
     # Goose fields
     gooseFields = [5, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59]
     # Gets playersTotal and playersName from userSetUp and converts namePlayers into list
@@ -174,8 +178,9 @@ def errors(storePlayersName):
 
 # <-- Defines main loop program -->
 def program():
-    global windowIcon, stageProgram, gameBoard, xPlayer, yPlayer, dice, valueDice, positionPlayers, turnPlayer, \
-            previousTurnPlayer, roundTurnPlayer, turns, waitTurn, waitTurnPossible,  eventText, skipTurn, totalPlayers
+    global windowIcon, cookieImage, stageProgram, boardFields, gooseFields, gameBoard, xPlayer, yPlayer, dice, valueDice, positionPlayers,\
+            turnPlayer, previousTurnPlayer, roundTurnPlayer, turns, waitTurn, waitTurnPossible,  eventText, skipTurn, \
+            totalPlayers
     # <-- Program set up -->
     # Starts pygame
     pygame.init()
@@ -195,7 +200,7 @@ def program():
     while stageProgram < 4:
         # <-- Window graphics -->
         # Window background
-        window.fill((255, 255, 255))
+        window.fill((77, 219, 160))
         # Gets dimension of gameBoard prints image into window
         gameBoardDimensions = gameBoard.get_rect()
         window.blit(gameBoard, gameBoardDimensions)
@@ -232,6 +237,8 @@ def program():
                 else: label = fontStyle.render(positionText, 1, (0, 0, 0))
                 window.blit(label, (1230, yText))
                 yText += 25
+        # Draws cookies on gooseFields
+        for i in gooseFields: window.blit(cookieImage, (boardFields[i]))
 
         # <-- Updates window graphics -->
         frameRate.tick(60)
