@@ -11,7 +11,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 
 
-# Image and set up variables
+# <-- Image and set up variables -->
 pawns = [Image.open("images/original/c++.png"), Image.open("images/original/css.png"), Image.open("images/original/dart.png"),
          Image.open("images/original/html.png"), Image.open("images/original/java.png"), Image.open("images/original/js.png"),
          Image.open("images/original/php.png"), Image.open("images/original/python.png"), Image.open("images/original/sql.png")]
@@ -31,7 +31,7 @@ titleFrameImage.thumbnail((60, 60))
 titleFrameImage.save("images/resized/sealy.jpg")
 
 
-# Defines function for user set up
+# <-- Defines function for user set up -->
 def userSetUp(storePlayersName):
     # Defines variables as global variables instead of scoped variables
     global stageProgram, playersTotal, playersName
@@ -40,13 +40,16 @@ def userSetUp(storePlayersName):
     # Defines root window. Withdrawing root window so tkinter doesn't create one.
     root = Tk()
     root.withdraw()
-    # Defines setUp window and sets properties window title, window icon, window size and window resize
+    # Defines setUp window and sets its properties
     # Toplevel window prohibits pygame image error
     setUp = tk.Toplevel()
     # Sets window focus on setUp
     setUp.focus_set()
+
     setUp.title("Sealybord")
-    setUp.geometry("500x400+600+300")
+    # Defines window dimensions and its position
+    setUp.geometry("500x250+600+300")
+
     setUp.resizable(0, 0)
     setUp.iconphoto(True, tk.PhotoImage(file="images/original/littleSealy.png"))
     # Defines frame in setUp window and sets its background color propertie
@@ -74,7 +77,8 @@ def userSetUp(storePlayersName):
 
     playersName = StringVar()
     playersName.set(storePlayersName)
-    namePlayers = Label(setUp, text="Vul de namen van de spelers in gescheiden doormiddel van \", \".\n Let op namen mogen maximaal 15 tekens lang zijn!", font=bodyFont)
+    namePlayers = Label(setUp, text="Vul de namen van de spelers in gescheiden doormiddel van \", \".\n"
+                                    " Let op namen mogen maximaal 15 tekens lang zijn!", font=bodyFont)
     namePlayers.grid(row=2, column=0, padx=(40, 0), pady=(5, 0), sticky=W)
     # Defines input field setUp window
     namePlayers = Entry(setUp, textvariable=playersName, width=50, bg="grey", fg="white")
@@ -92,16 +96,16 @@ def userSetUp(storePlayersName):
 
     # Defines button in setUp window
     nextButton = Button(setUp, text="Volgende", command=button)
-    nextButton.grid(row=4, column=0, padx=(0, 60), pady=(190, 0), sticky=E)
+    nextButton.grid(row=4, column=0, padx=(0, 60), pady=(42, 0), sticky=E)
     # Starts loop setUp window
     setUp.mainloop()
 
 
-# Defines function that sets global variables program
+# <-- Defines function that sets global variables program -->
 def variables():
-    global boardFields, totalPlayers, namePlayers, positionPlayers, turnPlayer, previousTurnPlayer, \
-            roundTurnPlayer, turns, skipTurn, waitTurn, waitTurnPossible, xPlayers, yPlayers, dice, valueDice, eventText, \
-            stageProgram
+    global boardFields, gooseFields, totalPlayers, namePlayers, positionPlayers, movePlayerPossible, turnPlayer,\
+            previousTurnPlayer, roundTurnPlayer, turns, skipTurn, waitTurn, waitTurnPossible, xPlayers, yPlayers,\
+            dice, valueDice, eventText, stageProgram
     # Defines x, y board fields
     boardFields = [[145, 715], [294, 715], [373, 715], [445, 715], [526, 715], [603, 715], [691, 715], [782, 715], [855, 710],
                    [950, 680], [1019, 625], [1065, 565], [1100, 505], [1120, 435], [1120, 355], [1105, 275], [1080, 210], [1035, 150],
@@ -110,12 +114,15 @@ def variables():
                    [300, 615], [375, 615], [450, 615], [527, 615], [607, 615], [695, 615], [780, 615], [860, 600], [940, 550],
                    [995, 480], [1010, 410], [1015, 335], [990, 270], [925, 195], [845, 150], [730, 145], [620, 145], [527, 145],
                    [440, 145], [365, 145], [290, 160], [205, 225], [175, 340], [190, 410], [235, 470], [305, 500], [370, 310]]
+    # Goose fields
+    gooseFields = [5, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59]
     # Gets playersTotal and playersName from userSetUp and converts namePlayers into list
     totalPlayers = playersTotal.get()
     storePlayersName = playersName.get()
     namePlayers = storePlayersName.split(", ")
-    # Variable keeping track position players
+    # Variables keeping track position players and if move is possible
     positionPlayers = [0] * totalPlayers
+    movePlayerPossible = True
     # Variables keeping track which players turn it is and the previous player. Also chooses who starts
     turnPlayer = random.randint(0, totalPlayers - 1)
     previousTurnPlayer = turnPlayer - 1
@@ -139,7 +146,7 @@ def variables():
     errors(storePlayersName)
 
 
-# Defines function that check for userSetUp errors
+# <-- Defines function that checks for userSetUp errors -->
 def errors(storePlayersName):
     global stageProgram, namePlayers
     if namePlayers[0] == "":
@@ -152,18 +159,18 @@ def errors(storePlayersName):
         userSetUp(storePlayersName)
     for i in namePlayers:
         if len(i) > 15:
-            messagebox.showerror("Sealybord", "Een naam mag niet langer dan 14 tekens zijn!")
+            messagebox.showerror("Sealybord", "Een naam mag niet langer dan 15 tekens zijn!")
             userSetUp(storePlayersName)
     if stageProgram == 2:
         stageProgram = 3
         program()
 
 
-# Defines main loop program
+# <-- Defines main loop program -->
 def program():
     global windowIcon, stageProgram, gameBoard, xPlayer, yPlayer, dice, valueDice, positionPlayers, turnPlayer, \
             previousTurnPlayer, roundTurnPlayer, turns, waitTurn, waitTurnPossible,  eventText, skipTurn, totalPlayers
-    # Program set up
+    # <-- Program set up -->
     # Starts pygame
     pygame.init()
     # Defines position (margin top) program window
@@ -173,14 +180,14 @@ def program():
     else: windowSize = [1200, 800]
     # Not RESIZABLE, because of changing x, y coordinats
     window = pygame.display.set_mode(windowSize)
-    # Sets window properties icon, title and frame rate
+    # Sets window properties
     pygame.display.set_icon(windowIcon)
     pygame.display.set_caption("Sealybord")
     frameRate = pygame.time.Clock()
 
-    # Main loop program
+    # <-- Main loop program -->
     while stageProgram < 4:
-        # Window graphics
+        # <-- Window graphics -->
         # Window background
         window.fill((255, 255, 255))
         # Gets dimension of gameBoard prints image into window
@@ -191,7 +198,6 @@ def program():
             xPlayers[i] = boardFields[positionPlayers[i]][0]
             yPlayers[i] = boardFields[positionPlayers[i]][1]
             window.blit(pawns[i], (xPlayers[i], yPlayers[i]))
-
         # Defines font
         fontStyle = pygame.font.SysFont(None, 35)
 
@@ -204,10 +210,10 @@ def program():
             label = fontStyle.render(eventText, 1, (0, 0, 0))
             window.blit(label, (390, 500))
         if totalPlayers != 1:
-            turnText = "Aan de beurt " + str(namePlayers[turnPlayer])
+            turnText = "Aan de beurt: " + str(namePlayers[turnPlayer])
             label = fontStyle.render(turnText, 1, (0, 0, 0))
             window.blit(label, (390, 527))
-            # Gets name and position of players and prints text onto window
+            # Gets name and position of players and prints it onto window in a table structure
             positionText = "Vak op het bord"
             label = fontStyle.render(positionText, 1, (0, 0, 0))
             window.blit(label, (1215, 20))
@@ -221,14 +227,14 @@ def program():
                 window.blit(label, (1230, yText))
                 yText += 25
 
-        # Updates window graphics
+        # <-- Updates window graphics -->
         frameRate.tick(60)
         pygame.display.flip()
 
-        # Event listeners
-        # Defines function that checks game related rules
+        # <-- Defines function that checks game related rules -->
         def gameRules():
-            global roundTurnPlayer, dice, positionPlayers, turnPlayer, eventText, skipTurn, waitTurn, stageProgram
+            global gooseFields, roundTurnPlayer, dice, positionPlayers, turnPlayer, eventText, skipTurn, waitTurn,\
+                    stageProgram
             # First turn dice exception
             if roundTurnPlayer == 0:
                 if dice[0] == 4 and dice[1] == 5 or dice[0] == 5 and dice[1] == 4:
@@ -237,13 +243,8 @@ def program():
                 if dice[0] == 6 and dice[1] == 3 or dice[0] == 3 and dice[1] == 6:
                     positionPlayers[turnPlayer] = 26
                     eventText = "Je gooide " + str(dice[0]) + " & " + str(dice[1]) + " dus je mag naar vakje 26."
-            # Goose fields
-            if positionPlayers[turnPlayer] == 5 or positionPlayers[turnPlayer] == 9 or positionPlayers[turnPlayer] == 14 or \
-                    positionPlayers[turnPlayer] == 18 or positionPlayers[turnPlayer] == 23 or \
-                    positionPlayers[turnPlayer] == 27 or positionPlayers[turnPlayer] == 32 or \
-                    positionPlayers[turnPlayer] == 36 or positionPlayers[turnPlayer] == 41 or \
-                    positionPlayers[turnPlayer] == 45 or positionPlayers[turnPlayer] == 50 or \
-                    positionPlayers[turnPlayer] == 54 or positionPlayers[turnPlayer] == 59:
+            # Goose field
+            if positionPlayers[turnPlayer] in gooseFields:
                 messagebox.showwarning("Sealybord", "Je kwam terecht op een gans vakje!")
                 addPosition()
             # Bridge field
@@ -260,7 +261,7 @@ def program():
                 eventText = "Je kwam op het put vakje!"
             # Maze field
             elif positionPlayers[turnPlayer] == 42:
-                positionPlayers[turnPlayer] = 37
+                positionPlayers[turnPlayer] = 39
                 eventText = "Je kwam op het doolhof vakje!"
             # Jail field
             elif positionPlayers[turnPlayer] == 52:
@@ -273,6 +274,7 @@ def program():
             # Stops program when someones position is 63
             elif positionPlayers[turnPlayer] == 63: stageProgram = 4
 
+        # <-- Event listeners -->
         for event in pygame.event.get():
             # Stops program when user clicks on exit
             if event.type == pygame.QUIT: stageProgram = 5
@@ -297,58 +299,72 @@ def program():
 
             if stageProgram == 3:
                 if keyboard.is_pressed("SPACE"):
-                    # Throws a dice and calculate the total value
+                    # Throws a dice and calculates the total value
                     dice = [random.randint(1, 6), random.randint(1, 6)]
                     valueDice = dice[0] + dice[1]
 
-                    # Defines function for new position player
+                    # <-- Defines function for new position player -->
                     def addPosition():
-                        global positionPlayers, turnPlayer, dice, valueDice, eventText, waitTurn
-                        # Enables players to move after waitTurn
-                        for i in waitTurn:
-                            if int(positionPlayers[turnPlayer] + valueDice) > int(i[1]):
-                                i[0] = False
-                                i[1] = 0
-                        # Sends players back after board field 63
-                        if positionPlayers[turnPlayer] + valueDice > 63:
-                            positionPlayers[turnPlayer] = 63 - (positionPlayers[turnPlayer] + valueDice - 63)
-                            eventText = "Je kwam niet precies op vakje 63!"
-                            # Sends player back if their position is a goose
-                            if positionPlayers[turnPlayer] == 54 or positionPlayers[turnPlayer] == 59:
-                                positionPlayers[turnPlayer] -= valueDice
-                                messagebox.showwarning("Sealybord", "Je kwam terecht op een gans vakje, terwijl je terug moest!")
-                        # Update players position normally
-                        else: positionPlayers[turnPlayer] += valueDice
-                        gameRules()
+                        global gooseFields, positionPlayers, movePlayerPossible, turnPlayer, dice, valueDice, eventText, waitTurn
+                        movePlayerPossible = True
+                        # Checks if board field is emtpy
+                        for i in positionPlayers:
+                            if int(positionPlayers[turnPlayer] + valueDice) in gooseFields:
+                                if int(positionPlayers[turnPlayer] + valueDice * 2) == int(i):
+                                    movePlayerPossible = False
+                                    eventText = "Er staat al een speler op dat vakje!"
+                            if int(positionPlayers[turnPlayer] + valueDice) == int(i):
+                                movePlayerPossible = False
+                                eventText = "Er staat al een speler op dat vakje!"
 
-                    # Checking if player is allowed to move
-                    if skipTurn[turnPlayer] == 0 and waitTurn[turnPlayer][0] == False:
+                        if movePlayerPossible:
+                            # Enables players to move after someone passed
+                            for i in waitTurn:
+                                if int(positionPlayers[turnPlayer] + valueDice) > int(i[1]):
+                                    i[0] = False
+                                    i[1] = 0
+                            # Sends players back after board field 63
+                            if positionPlayers[turnPlayer] + valueDice > 63:
+                                positionPlayers[turnPlayer] = 63 - (positionPlayers[turnPlayer] + valueDice - 63)
+                                eventText = "Je kwam niet precies op vakje 63!"
+                                # Sends player back if their position is a goose
+                                if positionPlayers[turnPlayer] in gooseFields:
+                                    positionPlayers[turnPlayer] -= valueDice
+                                    messagebox.showwarning("Sealybord", "Je kwam terecht op een gans vakje, terwijl je terug moest!")
+                            # Update players position normally
+                            else: positionPlayers[turnPlayer] += valueDice
+                            gameRules()
+
+                    # Checks if player is allowed to move
+                    if skipTurn[turnPlayer] == 0 and not waitTurn[turnPlayer][0]:
                         eventText = "Er is niets bijzonders!"
                         addPosition()
                     # Decreases skipTurn when player skipped a turn
                     elif skipTurn[turnPlayer] > 0:
                         eventText = "Je moest nog een beurt overslaan!"
                         skipTurn[turnPlayer] -= 1
+                    # Checks if waitTurn is possible
                     elif waitTurn[turnPlayer][0]:
                         # Prohibits single player waitTurn loop
+                        """
                         if totalPlayers == 1:
                             waitTurn[turnPlayer][0] = False
                             waitTurn[turnPlayer][1] = 0
                             eventText = "Beurt overgeslagen, want geen spelers!"
-                        # Prohibits no players waitTurn loo
-                        else:
-                            for i in positionPlayers:
-                                if i <= positionPlayers[turnPlayer]:
-                                    waitTurnPossible = True
-                                if not waitTurnPossible:
-                                    waitTurn[turnPlayer] = [False, 0]
-                                    eventText = "Beurt overgeslagen, want geen spelers!"
-                                else: eventText = "Je moet wachten op hulp!"
+                        # Prohibits no players waitTurn loop
+                        """
+                        waitTurnPossible = False
+                        for i in positionPlayers:
+                            if i < positionPlayers[turnPlayer]: waitTurnPossible = True
+                            if not waitTurnPossible:
+                               waitTurn[turnPlayer] = [False, 0]
+                               eventText = "Beurt overgeslagen, want geen spelers!"
+                            else: eventText = "Je moet wachten op hulp!"
                     # Updates turn related variables
                     turnPlayer += 1
                     previousTurnPlayer += 1
                     turns += 1
-                    # Resets turn related variables for continuous turn loop
+                    # Resets turn related variables for continuation turn loop
                     if turnPlayer + 1 > totalPlayers:
                         turnPlayer = 0
                         previousTurnPlayer = -1
@@ -372,5 +388,5 @@ def program():
         if stageProgram == 5: pygame.quit()
 
 
-# Starts program loop
+# <-- Starts program loop -->
 userSetUp("")
