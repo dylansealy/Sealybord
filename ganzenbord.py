@@ -115,8 +115,7 @@ def variables():
     storePlayersName = playersName.get()
     namePlayers = storePlayersName.split(", ")
     # Variable keeping track position players
-    ##
-    positionPlayers = [30] * totalPlayers
+    positionPlayers = [0] * totalPlayers
     # Variables keeping track which players turn it is and the previous player. Also chooses who starts
     turnPlayer = random.randint(0, totalPlayers - 1)
     previousTurnPlayer = turnPlayer - 1
@@ -126,7 +125,7 @@ def variables():
     # Variables keeping track if player must skip round or wait until someone else
     skipTurn = [0] * totalPlayers
     waitTurn = [[False, 0]] * totalPlayers
-    waitTurnPossible = True
+    waitTurnPossible = False
     # Variables keeping track x, y coordinates players
     xPlayers = [0] * totalPlayers
     yPlayers = [0] * totalPlayers
@@ -288,7 +287,7 @@ def program():
                     # First pygame quit too prevent old window errors
                     pygame.quit()
 
-                    userSetUp()
+                    userSetUp("")
                 else:
                     result = messagebox.askquestion("Sealybord", "Wil je stoppen?")
                     if result == "yes": stageProgram = 5
@@ -299,11 +298,8 @@ def program():
             if stageProgram == 3:
                 if keyboard.is_pressed("SPACE"):
                     # Throws a dice and calculate the total value
-                    ##
-                    #dice = [random.randint(1, 6), random.randint(1, 6)]
-                    dice = [0, 1]
+                    dice = [random.randint(1, 6), random.randint(1, 6)]
                     valueDice = dice[0] + dice[1]
-
 
                     # Defines function for new position player
                     def addPosition():
@@ -333,20 +329,21 @@ def program():
                     elif skipTurn[turnPlayer] > 0:
                         eventText = "Je moest nog een beurt overslaan!"
                         skipTurn[turnPlayer] -= 1
-                    elif waitTurn[turnPlayer][0] == True:
+                    elif waitTurn[turnPlayer][0]:
                         # Prohibits single player waitTurn loop
                         if totalPlayers == 1:
                             waitTurn[turnPlayer][0] = False
                             waitTurn[turnPlayer][1] = 0
-                            eventText = "Geen spelers om te wachten. Je hebt een beurt ovegeslagenr!"
+                            eventText = "Beurt overgeslagen, want geen spelers!"
                         # Prohibits no players waitTurn loo
                         else:
                             for i in positionPlayers:
                                 if i <= positionPlayers[turnPlayer]:
-                                    waitTurnPossible = False
-                                if waitTurnPossible != True:
+                                    waitTurnPossible = True
+                                if not waitTurnPossible:
                                     waitTurn[turnPlayer] = [False, 0]
                                     eventText = "Beurt overgeslagen, want geen spelers!"
+                                else: eventText = "Je moet wachten op hulp!"
                     # Updates turn related variables
                     turnPlayer += 1
                     previousTurnPlayer += 1
@@ -368,7 +365,7 @@ def program():
                 result = messagebox.askquestion("Sealybord", "Wil je nog een keer spelen?")
                 if result == "yes":
                     pygame.quit()
-                    userSetUp()
+                    userSetUp("")
                 else: stageProgram = 5
 
         # Stops program
