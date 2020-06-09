@@ -8,7 +8,7 @@ git clone https://github.com/DylanSealy/Ganzenbord.git
 pip install keyboard
 pip install Pillow
 pip install pygame
-Voer ganzenbord.py uit
+python3 Ganzenbord.py
 ```
 
 ## Gebruik
@@ -23,10 +23,10 @@ Het gebruik van dit spel spreekt over het algemeen voor zichzelf. Hieronder echt
 * Op een cookie vakje moet je het gegooide aantal ogen nog een keer naar voren. Als je teruggaat vanaf 63 dan moet je op een cookie vakje ook terug.
 * Als een speler op het vakje 6 komt dan moet de speler naar het vakje 12.
 * Als een speler op het vakje 19 komt dan moet de speler een beurt overslaan.
-* Als een speler op het vakje 31 komt dan moet een andere speler je niet bevrijden. Is dit niet mogelijk dan moet je een beurt overslaan.
+* Als een speler op het vakje 31 komt dan moet een andere speler je bevrijden. Is dit niet mogelijk dan moet je een beurt overslaan.
 * Als een speler op het vakje 42 komt dan moet de speler naar het vakje 39.
-* Als een speler op het vakje 58 komt dan moet een andere speler je niet bevrijden. Is dit niet mogelijk dan moet je een beurt overslaan.
+* Als een speler op het vakje 58 komt dan moet een andere speler je bevrijden. Is dit niet mogelijk dan moet je een beurt overslaan.
 * Je moet precies op het vakje 63 terechtkomen. 
 
 ## Licentie 
-Dit project is gelicentieerd onder de GNU GPLv3-licentie. Zie het [LICENSE.md](LICENSE.md) bestand voor meer details. 
+Dit project is gelicentieerd onder de GNU GPLv3-licentie. Zie het [LICENSE](LICENSE) bestand voor meer details. 
