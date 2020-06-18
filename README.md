@@ -47,5 +47,8 @@ Het gebruik van dit spel spreekt over het algemeen voor zichzelf. Hieronder echt
 * Als een speler op het vakje 58 komt dan moet een andere speler je bevrijden. Is dit niet mogelijk dan moet je een beurt overslaan.
 * Je moet precies op het vakje 63 terechtkomen. 
 
+## Bekende problemen
+Kijk bij de [issue](https://github.com/DylanSealy/Ganzenbord/issues) sectie voor alle bekende problemen. Hier kun je ook nieuwe problemen toevoegen. 
+
 ## Licentie 
 Dit project is gelicentieerd onder de GNU GPLv3-licentie. Zie het [LICENSE](LICENSE) bestand voor meer details. 
