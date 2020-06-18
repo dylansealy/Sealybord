@@ -2,13 +2,32 @@
 Sealybord is een Python spel gebaseerd op ganzenbord.
 
 ## Installatie
-Sealybord hoeft niet geïnstalleerd te worden, maar is wel afhankelijk van enkele Python modules.
+Sealybord is te spelen op elke GUI gebaseerde besturingssysteem die ondersteund wordt door Python. Sealybord vereist enkele pip modules.
+
+### Windows en OS X
+* Download en installeer Python voor [Windows](https://www.python.org/downloads/windows/) of [OS X]https://www.python.org/downloads/mac-osx/). 
+* Download en installeer de benodigde pip modules.
+* Download of clone de repository.
+* Voer Ganzenbord.py uit.
+
+### Linux 
 ```bash
-git clone https://github.com/DylanSealy/Ganzenbord.git 
+sudo apt-get install python3
+sudo apt-get install pip
+```
+Download en installeer de benodigde pip modules.
+```bash
+git clone https://github.com/DylanSealy/Ganzenbord.git
+cd Ganzenbord
+python3 Ganzenbord.py
+```
+
+### Pip modules
+Download en installeer de benodigde pip modules.
+```bash
 pip install keyboard
 pip install Pillow
 pip install pygame
-python3 Ganzenbord.py
 ```
 
 ## Gebruik
