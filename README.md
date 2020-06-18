@@ -15,7 +15,7 @@ Sealybord is te spelen op elke GUI gebaseerde besturingssysteem die ondersteund 
 sudo apt-get install python3
 sudo apt-get install pip
 ```
-* Download en installeer de [benodigde pip](#pip-modules) modules.
+Download en installeer de [benodigde pip](#pip-modules) modules.
 ```bash
 git clone https://github.com/DylanSealy/Ganzenbord.git
 cd Ganzenbord
