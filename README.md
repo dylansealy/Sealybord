@@ -17,7 +17,7 @@ sudo apt-get install pip
 ```
 Download en installeer de [benodigde pip](#pip-modules) modules.
 ```bash
-git clone https://github.com/DylanSealy/Ganzenbord.git
+git clone https://github.com/DylanSealy/Sealybord.git
 cd Ganzenbord
 python3 Ganzenbord.py
 ```
