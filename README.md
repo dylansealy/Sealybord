@@ -5,12 +5,13 @@ Sealybord is een Python spel gebaseerd op ganzenbord.
 Sealybord is te spelen op elke GUI gebaseerde besturingssysteem die ondersteund wordt door Python. Sealybord vereist enkele pip modules.
 
 ### Windows en OS X
-* Download en installeer Python voor [Windows](https://www.python.org/downloads/windows/) of [OS X](https://www.python.org/downloads/mac-osx/). 
+* Download en installeer Python voor [Windows](https://www.python.org/downloads/windows/) of [OS X](https://www.python.org/downloads/mac-osx/).
 * Download en installeer de [benodigde pip](#pip-modules) modules.
 * Download of clone de repository.
+* Download en installeer de [benodigde pip](#pip-modules) modules
 * Voer Ganzenbord.py uit.
 
-### Linux 
+### Linux
 ```bash
 sudo apt-get install python3
 sudo apt-get install pip
@@ -25,9 +26,8 @@ python3 Ganzenbord.py
 ### Pip modules
 Download en installeer de benodigde pip modules.
 ```bash
-pip install keyboard
-pip install Pillow
-pip install pygame
+cd /map met Sealybord/
+pip install -r requirements.txt
 ```
 
 ## Gebruik
@@ -45,10 +45,10 @@ Het gebruik van dit spel spreekt over het algemeen voor zichzelf. Hieronder echt
 * Als een speler op het vakje 31 komt dan moet een andere speler je bevrijden. Is dit niet mogelijk dan moet je een beurt overslaan.
 * Als een speler op het vakje 42 komt dan moet de speler naar het vakje 39.
 * Als een speler op het vakje 58 komt dan moet een andere speler je bevrijden. Is dit niet mogelijk dan moet je een beurt overslaan.
-* Je moet precies op het vakje 63 terechtkomen. 
+* Je moet precies op het vakje 63 terechtkomen.
 
 ## Bekende problemen
-Kijk bij de [issue](https://github.com/DylanSealy/Ganzenbord/issues) sectie voor alle bekende problemen. Hier kun je ook nieuwe problemen toevoegen. 
+Kijk bij de [issue](https://github.com/DylanSealy/Ganzenbord/issues) sectie voor alle bekende problemen. Hier kun je ook nieuwe problemen toevoegen.
 
-## Licentie 
-Dit project is gelicentieerd onder de GNU GPLv3-licentie. Zie het [LICENSE](LICENSE) bestand voor meer details. 
+## Licentie
+Dit project is gelicentieerd onder de GNU GPLv3-licentie. Zie het [LICENSE](LICENSE) bestand voor meer details.
