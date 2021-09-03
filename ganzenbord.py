@@ -406,6 +406,8 @@ def program():
                 else: stageProgram = 5
 
         # Stops program
-        if stageProgram == 5: pygame.quit()
+        if stageProgram == 5:
+            pygame.quit()
+            exit()
 #* Starts program loop
 userSetUp("Naam", 1, 0)
