@@ -1,54 +1,40 @@
-# Imports all necessary libraries
+#* Imports all necessary libraries
+import glob, keyboard, os, random, time, webbrowser
 import pygame
-import random
 import tkinter as tk
 import tkinter.font as tkFont
-import keyboard
-import time
-import os
-import webbrowser
 from tkinter import *
 from tkinter import messagebox
+#! Must be last import
 from PIL import Image, ImageTk
-
-
-# <-- Image and set up variables -->
-pawns = [Image.open("images/original/pawns/c++.png"), Image.open("images/original/pawns/css.png"),
-         Image.open("images/original/pawns/dart.png"), Image.open("images/original/pawns/html.png"),
-         Image.open("images/original/pawns/js.png"), Image.open("images/original/pawns/php.png"),
-         Image.open("images/original/pawns/python.png"), Image.open("images/original/pawns/swift.png"),
-         Image.open("images/original/pawns/visualcode.png"), Image.open("images/original/pawns/typescript.png"),
-         Image.open("images/original/pawns/java.png"), Image.open("images/original/pawns/sql.png")]
-pawnsName = ["c++.png", "css.png", "dart.png", "html.png", "js.png", "php.png", "python.png", "swift.png",
-             "visualcode.png", "typescript.png", "java.png", "sql.png"]
-# Resizes pawn images with maximum height or width, but keeping aspect ratio
-for i in range(0, len(pawns)):
-    pawns[i].thumbnail((50, 50))
-    pawns[i].save("images/resized/pawns/" + pawnsName[i])
-
-pawns = [pygame.image.load("images/resized/pawns/c++.png"), pygame.image.load("images/resized/pawns/css.png"),
-         pygame.image.load("images/resized/pawns/dart.png"), pygame.image.load("images/resized/pawns/html.png"),
-         pygame.image.load("images/resized/pawns/js.png"), pygame.image.load("images/resized/pawns/php.png"),
-         pygame.image.load("images/resized/pawns/python.png"), pygame.image.load("images/resized/pawns/swift.png"),
-         pygame.image.load("images/resized/pawns/visualcode.png"), pygame.image.load("images/resized/pawns/typescript.png"),
-         pygame.image.load("images/resized/pawns/java.png"), pygame.image.load("images/resized/pawns/sql.png")]
+#* Initialize images and game variables
+# Creates neccesary resized folders
+try:
+    os.makedirs("./images/resized/pawns/", 666)
+    os.makedirs("./images/resized/gameBoardAssets/", 666)
+except:
+    print("Folder(s) bestaa(t)(n) al.")
+# Creates resized images
+for file in glob.glob("./images/original/**/*", recursive=True):
+    if not os.path.isdir(file):
+        name = os.path.basename(file)
+        image = Image.open(file)
+        if file[18:23] == "pawns":
+            # Resizes image with maximum height or width, but keeping aspect ratio
+            image.thumbnail((50, 50))
+            image.save("./images/resized/pawns/" + name)
+        elif file[18:33] == "gameBoardAssets":
+            image.thumbnail((70, 70))
+            image.save("./images/resized/gameBoardAssets/" + name)
+        elif file[18:27] == "sealy.jpg":
+            image.thumbnail((60, 60))
+            image.save("./images/resized/" + name)
+# Creates pawn list
+pawns: list[pygame.image] = []
+for pawn in glob.glob("./images/resized/pawns/*"):
+    pawns.append(pygame.image.load(pawn))
 gameBoard = pygame.image.load("images/original/spelbord.png")
 windowIcon = pygame.image.load("images/original/littleSealy.png")
-titleFrameImage = Image.open("images/original/sealy.jpg")
-titleFrameImage.thumbnail((60, 60))
-titleFrameImage.save("images/resized/sealy.jpg")
-gameBoardAssets = [Image.open("images/original/gameBoardAssets/cookie.png"),
-                   Image.open("images/original/gameBoardAssets/wifi.png"),
-                   Image.open("images/original/gameBoardAssets/github.png"),
-                   Image.open("images/original/gameBoardAssets/darweb.png"),
-                   Image.open("images/original/gameBoardAssets/internet.png"),
-                   Image.open("images/original/gameBoardAssets/apple.png"),
-                   Image.open("images/original/gameBoardAssets/internetexplorer.png")]
-gameBoardAssetsName = ["cookie.png", "wifi.png", "github.png", "darkweb.png", "internet.png", "apple.png",
-                       "internetexplorer.png"]
-for i in range(0, len(gameBoardAssets)):
-    gameBoardAssets[i].thumbnail((70, 70))
-    gameBoardAssets[i].save("images/resized/gameBoardAssets/" + gameBoardAssetsName[i])
 cookieImage = pygame.image.load("images/resized/gameBoardAssets/cookie.png")
 wifiImage = pygame.image.load("images/resized/gameBoardAssets/wifi.png")
 gitHubImage = pygame.image.load("images/resized/gameBoardAssets/github.png")
@@ -56,8 +42,7 @@ darkWebImage = pygame.image.load("images/resized/gameBoardAssets/darkweb.png")
 internetImage = pygame.image.load("images/resized/gameBoardAssets/internet.png")
 appleImage = pygame.image.load("images/resized/gameBoardAssets/apple.png")
 internetExplorerImage = pygame.image.load("images/resized/gameBoardAssets/internetexplorer.png")
-
-# <-- Defines function for user set up -->
+#* Defines function for user set up
 def userSetUp(storePlayersName, storePlayersTotal, storeRulesCheck):
     # Defines variables as global variables instead of scoped variables
     global stageProgram, playersTotal, playersName, rulesCheck
@@ -129,9 +114,7 @@ def userSetUp(storePlayersName, storePlayersTotal, storeRulesCheck):
     nextButton.grid(row=5, column=0, padx=(0, 60), pady=(10, 0), sticky=E)
     # Starts loop setUp window
     setUp.mainloop()
-
-
-# <-- Defines function that sets global variables program -->
+#* Defines function that sets global variables program
 def variables():
     global boardFields, gooseFields, totalPlayers, namePlayers, positionPlayers, movePlayerPossible, turnPlayer,\
             previousTurnPlayer, turns, skipTurn, waitTurn, waitTurnPossible, xPlayers, yPlayers,\
@@ -175,9 +158,7 @@ def variables():
     storeRulesCheck = rulesCheck.get()
     stageProgram = 2
     errors(storePlayersName, storePlayersTotal, storeRulesCheck)
-
-
-# <-- Defines function that checks for userSetUp errors -->
+#*Defines function that checks for userSetUp errors
 def errors(storePlayersName, storePlayersTotal, storeRulesCheck):
     global stageProgram, namePlayers
     if namePlayers[0] == "":
@@ -199,14 +180,12 @@ def errors(storePlayersName, storePlayersTotal, storeRulesCheck):
         if rulesView == 1: webbrowser.open(url="https://github.com/DylanSealy/Ganzenbord.git")
 
         program()
-
-
-# <-- Defines main loop program -->
+#*Defines main loop program
 def program():
     global windowIcon, cookieImage, stageProgram, boardFields, gooseFields, gameBoard, xPlayer, yPlayer, dice, valueDice, positionPlayers,\
             turnPlayer, previousTurnPlayer, turns, waitTurn, waitTurnPossible,  eventText, skipTurn, \
             totalPlayers
-    # <-- Program set up -->
+    #* Program set up
     # Starts pygame
     pygame.init()
     # Defines position (margin top) program window
@@ -220,10 +199,9 @@ def program():
     pygame.display.set_icon(windowIcon)
     pygame.display.set_caption("Sealybord")
     frameRate = pygame.time.Clock()
-
-    # <-- Main loop program -->
+    #* Main loop program
     while stageProgram < 4:
-        # <-- Window graphics -->
+        #* Window graphics
         # Window background
         window.fill((77, 219, 160))
         # Gets dimension of gameBoard prints image into window
@@ -271,12 +249,10 @@ def program():
                 else: label = fontStyle.render(positionText, 1, (0, 0, 0))
                 window.blit(label, (1230, yText))
                 yText += 25
-
-        # <-- Updates window graphics -->
+        #* Updates window graphics
         frameRate.tick(60)
         pygame.display.flip()
-
-        # <-- Defines function that checks game related rules -->
+        #* Defines function that checks game related rules
         def gameRules():
             global gooseFields, dice, positionPlayers, turnPlayer, eventText, skipTurn, waitTurn,\
                     stageProgram
@@ -328,8 +304,7 @@ def program():
                 eventText = "Je kwam op Internet Explorer!"
             # Stops program when someones position is 63
             elif positionPlayers[turnPlayer] == 63: stageProgram = 4
-
-        # <-- Event listeners -->
+        #* Event listeners
         for event in pygame.event.get():
             # Stops program when user clicks on exit
             if event.type == pygame.QUIT: stageProgram = 5
@@ -357,8 +332,7 @@ def program():
                     # Throws a dice and calculates the total value
                     dice = [random.randint(1, 6), random.randint(1, 6)]
                     valueDice = dice[0] + dice[1]
-
-                    # <-- Defines function for new position player -->
+                    #* Defines function for new position player
                     def addPosition():
                         global gooseFields, positionPlayers, movePlayerPossible, turnPlayer, dice, valueDice, eventText, waitTurn
                         movePlayerPossible = True
@@ -433,7 +407,5 @@ def program():
 
         # Stops program
         if stageProgram == 5: pygame.quit()
-
-
-# <-- Starts program loop -->
+#* Starts program loop
 userSetUp("Naam", 1, 0)
