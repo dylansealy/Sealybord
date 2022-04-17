@@ -1,41 +1,45 @@
 # Sealybord
+
 Sealybord is een Python spel gebaseerd op ganzenbord.
 
 ## Installatie
-Sealybord is te spelen op elke GUI gebaseerde besturingssysteem die ondersteund wordt door Python. Sealybord vereist enkele pip modules.
+
+Sealybord is te spelen op elk GUI gebaseerde besturingssysteem die ondersteund wordt door Python. Sealybord vereist enkele pip modules.
 
 ### Windows en OS X
-* Download en installeer Python voor [Windows](https://www.python.org/downloads/windows/) of [OS X](https://www.python.org/downloads/mac-osx/). Let op de Windows Store versie van Python werkt niet!
-* Download en installeer de [benodigde pip](#pip-modules) modules.
+
+* Download en installeer Python voor [Windows](https://www.python.org/downloads/windows/) of [OS X](https://www.python.org/downloads/mac-osx/). **De Windows Store versie van Python werkt niet!**
 * Download of clone de repository.
-* Download en installeer de [benodigde pip](#pip-modules) modules
-* Voer Ganzenbord.py uit.
+* Installeer de [benodigde pip](#pip-modules) modules.
 
 ### Linux
+
 ```bash
-sudo apt-get install python3
-sudo apt-get install pip
-```
-Download en installeer de [benodigde pip](#pip-modules) modules.
-```bash
+sudo apt install python3
+sudo apt install pip
 git clone https://github.com/DylanSealy/Sealybord.git
-cd Ganzenbord
-python3 Ganzenbord.py
 ```
 
+Download en installeer de [benodigde pip](#pip-modules) modules.
+
 ### Pip modules
-Download en installeer de benodigde pip modules.
+
+Installeer de benodigde pip modules.
+
 ```bash
-cd /map met Sealybord/
+cd Sealybord/
 pip install -r requirements.txt
 ```
 
 ## Gebruik
+
 Het gebruik van dit spel spreekt over het algemeen voor zichzelf. Hieronder echter enkele aanwijzingen voor het gebruik van het programma.
+
 * Druk op spatie om te gooien.
 * Druk op escape om opnieuw te beginnen of om te stoppen.
 
 ## Spelregels
+
 * Er wordt random gekozen wie er moet beginnen.
 * Wanneer een speler vanaf start 4 & 5 gooit dan moet de speler naar het vakje 53.
 * Wanneer een speler vanaf start 3 & 6 gooit dan moet de speler naar het vakje 26.
@@ -48,7 +52,9 @@ Het gebruik van dit spel spreekt over het algemeen voor zichzelf. Hieronder echt
 * Je moet precies op het vakje 63 terechtkomen.
 
 ## Bekende problemen
+
 Kijk bij de [issue](https://github.com/DylanSealy/Ganzenbord/issues) sectie voor alle bekende problemen. Hier kun je ook nieuwe problemen toevoegen.
 
 ## Licentie
+
 Dit project is gelicentieerd onder de GNU GPLv3-licentie. Zie het [LICENSE](LICENSE) bestand voor meer details.
